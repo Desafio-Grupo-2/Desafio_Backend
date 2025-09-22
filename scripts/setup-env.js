@@ -67,12 +67,12 @@ function createEnvFile() {
 
     try {
         if (fs.existsSync(envPath)) {
-            console.log('⚠️  El archivo .env ya existe');
+            console.log('El archivo .env ya existe');
             console.log('¿Deseas sobrescribirlo? (y/N)');
 
             const backupPath = path.join(__dirname, '..', '.env.backup');
             fs.copyFileSync(envPath, backupPath);
-            console.log(`📁 Backup creado en: ${backupPath}`);
+            console.log(`Backup creado en: ${backupPath}`);
         }
 
         // Crear el archivo .env
