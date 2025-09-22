@@ -1,107 +1,32 @@
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const swaggerUi = require('swagger-ui-express');
-const swaggerJsdoc = require('swagger-jsdoc');
-require('dotenv').config();
+//PLACEHOLDER CODE
+// const express = require('express');
+// const path = require('path');
+// const app = express();
+// const { typeError } = require('./middlewares/errors');
+// app.use(express.json());
+// app.use(express.urlencoded({ extended: true }));
 
-const { testConnection } = require('./config/database');
-const { syncModels } = require('./models');
-const errorHandler = require('./middlewares/errors');
-const { generalLimiter } = require('./middlewares/rateLimiter');
+// const PORT = 3000;
 
-// Importar rutas
-const authRoutes = require('./modules/auth/auth.routes');
-const userRoutes = require('./modules/users/user.routes');
+// app.use((err, req, res, next) => {
+//     console.error('ERROR:', err);
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+//     const statusCode = err.status || 500;
+//     const message = err.message || 'Error interno del servidor';
 
-// Middleware de seguridad
-app.use(
-    helmet({
-        contentSecurityPolicy: {
-            directives: {
-                defaultSrc: ["'self'"],
-                styleSrc: ["'self'", "'unsafe-inline'"],
-                scriptSrc: ["'self'"],
-                imgSrc: ["'self'", 'data:', 'https:'],
-            },
-        },
-        hsts: {
-            maxAge: 31536000,
-            includeSubDomains: true,
-            preload: true,
-        },
-    })
-);
+//     res.status(statusCode).json({
+//         message,
+//         ...(err.code && { code: err.code }),
+//     });
+// });
 
-// Rate limiting general
-app.use(generalLimiter);
+// app.use('/auth', require('./modules/auth/auth.routes'));
+// app.use('/users', require('./modules/users/user.routes'));
+// app.use('/tickets', require('./modules/tickets/ticket.routes'));
+// app.use('/trips', require('./modules/trips/trip.routes'));
 
-// CORS
-app.use(
-    cors({
-        origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
-        credentials: true,
-    })
-);
+// app.use(typeError);
 
-// Parser de JSON
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-
-// Configuración de Swagger
-const swaggerConfig = require('../docs/config/swagger.config');
-const swaggerSpec = swaggerJsdoc(swaggerConfig);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-// Rutas de la API
-app.use('/api/v1/auth', authRoutes);
-app.use('/api/v1/users', userRoutes);
-
-// Ruta de salud
-app.get('/health', (req, res) => {
-    res.status(200).json({
-        status: 'OK',
-        message: 'Servidor funcionando correctamente',
-        timestamp: new Date().toISOString(),
-    });
-});
-
-// Ruta raíz
-app.get('/', (req, res) => {
-    res.json({
-        message: 'API de Gestión de Flotas - Desafío Tripulaciones',
-        version: '1.0.0',
-        documentation: '/api-docs',
-    });
-});
-
-// Middleware de manejo de errores
-app.use(errorHandler);
-
-// Iniciar servidor
-const startServer = async () => {
-    try {
-        // Probar conexión a la base de datos
-        await testConnection();
-
-        // Sincronizar modelos
-        await syncModels();
-
-        app.listen(PORT, () => {
-            console.log(`Servidor ejecutándose en puerto ${PORT}`);
-            console.log(
-                `Documentación disponible en http://localhost:${PORT}/api-docs`
-            );
-        });
-    } catch (error) {
-        console.error('Error al iniciar el servidor:', error.message);
-        process.exit(1);
-    }
-};
-
-startServer();
-
-module.exports = app;
+// app.listen(PORT, () => {
+//     console.log(`Server running on port ${PORT}`);
+// });

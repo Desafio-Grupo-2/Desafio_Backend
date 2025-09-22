@@ -1,38 +1,41 @@
-const { body } = require('express-validator');
+//PLACEHOLDER
 
-// Validaciones de registro
-const registerValidation = [
-    body('email').isEmail().normalizeEmail().withMessage('Email inválido'),
-    body('password')
-        .isLength({ min: 6 })
-        .withMessage('La contraseña debe tener al menos 6 caracteres'),
-    body('firstName').notEmpty().trim().withMessage('El nombre es requerido'),
-    body('lastName').notEmpty().trim().withMessage('El apellido es requerido'),
-    body('phone').optional().isMobilePhone().withMessage('Teléfono inválido'),
-    body('role')
-        .optional()
-        .isIn(['admin', 'empleado'])
-        .withMessage('Rol inválido'),
-];
+// const Joi = require('joi');
 
-// Validaciones de login
-const loginValidation = [
-    body('email').isEmail().normalizeEmail().withMessage('Email inválido'),
-    body('password').notEmpty().withMessage('La contraseña es requerida'),
-];
+// const signupSchema = Joi.object({
+//     email: Joi.string().email().required().messages({
+//         'string.empty': 'El email es obligatorio',
+//         'string.email': 'El email no es válido',
+//     }),
 
-// Validaciones de cambio de contraseña
-const changePasswordValidation = [
-    body('currentPassword')
-        .notEmpty()
-        .withMessage('La contraseña actual es requerida'),
-    body('newPassword')
-        .isLength({ min: 6 })
-        .withMessage('La nueva contraseña debe tener al menos 6 caracteres'),
-];
+//     password: Joi.string().min(6).max(100).required().messages({
+//         'string.empty': 'La contraseña es obligatoria',
+//         'string.min': 'La contraseña debe tener al menos 6 caracteres',
+//         'string.max': 'La contraseña no puede superar los 100 caracteres',
+//     }),
 
-module.exports = {
-    registerValidation,
-    loginValidation,
-    changePasswordValidation,
-};
+//     userName: Joi.string().min(2).max(50).required().messages({
+//         'string.empty': 'El nombre de usuario es obligatorio',
+//         'string.min': 'El nombre de usuario debe tener al menos 2 caracteres',
+//     }),
+
+//     role: Joi.string().valid('user', 'admin').optional().messages({
+//         'any.only': 'El rol debe ser "user" o "admin"',
+//     }),
+// });
+
+// const loginSchema = Joi.object({
+//     email: Joi.string().email().required().messages({
+//         'string.empty': 'El email es obligatorio',
+//         'string.email': 'El email no es válido',
+//     }),
+
+//     password: Joi.string().required().messages({
+//         'string.empty': 'La contraseña es obligatoria',
+//     }),
+// });
+
+// module.exports = {
+//     signupSchema,
+//     loginSchema,
+// };
