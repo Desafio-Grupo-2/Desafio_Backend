@@ -9,21 +9,10 @@ const { testConnection } = require('./config/database');
 const { syncModels } = require('./models');
 const errorHandler = require('./middlewares/errors');
 const { generalLimiter } = require('./middlewares/rateLimiter');
-const {
-    logFailedLogin,
-    logRegistration,
-    logPasswordChange,
-    logUnauthorizedAccess,
-    logCriticalErrors,
-} = require('./middlewares/securityLogger');
 
 // Importar rutas
 const authRoutes = require('./modules/auth/auth.routes');
 const userRoutes = require('./modules/users/user.routes');
-const vehicleRoutes = require('./modules/vehicles/vehicle.routes');
-const tripRoutes = require('./modules/trips/trips.routes');
-const ticketRoutes = require('./modules/tickets/ticket.routes');
-const securityLogRoutes = require('./modules/security-logs/security-logs.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -67,20 +56,9 @@ const swaggerConfig = require('../docs/config/swagger.config');
 const swaggerSpec = swaggerJsdoc(swaggerConfig);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// Middleware de logging de seguridad
-app.use(logFailedLogin);
-app.use(logRegistration);
-app.use(logPasswordChange);
-app.use(logUnauthorizedAccess);
-app.use(logCriticalErrors);
-
 // Rutas de la API
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', userRoutes);
-app.use('/api/v1/vehicles', vehicleRoutes);
-app.use('/api/v1/trips', tripRoutes);
-app.use('/api/v1/tickets', ticketRoutes);
-app.use('/api/v1/security-logs', securityLogRoutes);
 
 // Ruta de salud
 app.get('/health', (req, res) => {
@@ -115,7 +93,7 @@ const startServer = async () => {
         app.listen(PORT, () => {
             console.log(`Servidor ejecutándose en puerto ${PORT}`);
             console.log(
-                `📚 Documentación disponible en http://localhost:${PORT}/api-docs`
+                `Documentación disponible en http://localhost:${PORT}/api-docs`
             );
         });
     } catch (error) {
