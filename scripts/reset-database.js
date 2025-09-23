@@ -62,7 +62,7 @@ const resetDatabase = async () => {
         // PASO 3: Ejecutar seeders
         console.log('PASO 3: Ejecutando seeders...');
         
-        const seederPath = path.join(__dirname, '../src/seeders/2509161925-initial-data.js');
+        const seederPath = path.join(__dirname, '../src/seeders/250923161925-initial-data.js');
         const seeder = require(seederPath);
         
         await seeder.up(sequelize.getQueryInterface(), sequelize.constructor);
