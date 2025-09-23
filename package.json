@@ -8,6 +8,7 @@
         "db:migrate": "npx sequelize-cli db:migrate",
         "db:seed": "npx sequelize-cli db:seed:all",
         "db:reset": "npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
+        "db:reset:full": "node scripts/reset-database.js",
         "setup:env": "node scripts/setup-env.js",
         "setup:init": "npm run setup:env && npm run db:migrate && npm run db:seed"
     },

@@ -8,7 +8,7 @@ const swaggerConfig = {
         info: {
             title: 'Desafío Tripulaciones API',
             version: '1.0.0',
-            description: 'API para gestión de flotas de vehículos',
+            description: 'API para gestión de usuarios y autenticación',
             license: {
                 name: 'ISC',
                 url: 'https://opensource.org/licenses/ISC',
@@ -45,18 +45,6 @@ const swaggerConfig = {
                 name: 'Users',
                 description:
                     'Gestión de usuarios (conductores y jefe de flota)',
-            },
-            {
-                name: 'Vehicles',
-                description: 'Gestión de vehículos de la flota',
-            },
-            {
-                name: 'Trips',
-                description: 'Gestión de viajes y rutas',
-            },
-            {
-                name: 'Tickets',
-                description: 'Gestión de tickets y reportes',
             },
         ],
     },

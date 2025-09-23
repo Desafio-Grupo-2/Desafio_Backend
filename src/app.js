@@ -72,7 +72,7 @@ app.get('/health', (req, res) => {
 // Ruta raíz
 app.get('/', (req, res) => {
     res.json({
-        message: 'API de Gestión de Flotas - Desafío Tripulaciones',
+        message: 'API de Gestión de Usuarios - Desafío Tripulaciones',
         version: '1.0.0',
         documentation: '/api-docs',
     });

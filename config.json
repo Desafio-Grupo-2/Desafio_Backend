@@ -1,0 +1,29 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "password",
+    "database": "desafio_tripulaciones",
+    "host": "localhost",
+    "port": 5432,
+    "dialect": "postgres",
+    "logging": false
+  },
+  "test": {
+    "username": "postgres",
+    "password": "password",
+    "database": "desafio_tripulaciones_test",
+    "host": "localhost",
+    "port": 5432,
+    "dialect": "postgres",
+    "logging": false
+  },
+  "production": {
+    "username": "postgres",
+    "password": "password",
+    "database": "desafio_tripulaciones",
+    "host": "localhost",
+    "port": 5432,
+    "dialect": "postgres",
+    "logging": false
+  }
+}
