@@ -1,44 +1,107 @@
-//PLACEHOLDER CODE
+const jwt = require('jsonwebtoken');
+const { Usuario } = require('../models');
 
-// const { User, Token, Sequelize } = require('../models');
-// const { Op } = Sequelize;
-// const jwt = require('jsonwebtoken');
-// const { jwt_secret } = require('../config/config.json')['development'];
+// Middleware de autenticación
+const authenticateToken = async (req, res, next) => {
+    try {
+        const authHeader = req.headers['authorization'];
+        const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
 
-// const authentication = async (req, res, next) => {
-//     try {
-//         const token = req.headers.authorization;
-//         const payload = jwt.verify(token, jwt_secret);
-//         const user = await User.findByPk(payload.id);
-//         if (!user) {
-//             return res.status(404).send({ message: 'Usuario no encontrado' });
-//         }
-//         const tokenFound = await Token.findOne({
-//             where: { [Op.and]: [{ UserId: user.id }, { token: token }] },
-//         });
-//         if (!tokenFound) {
-//             return res.status(401).send({ message: 'No estas autorizado' });
-//         }
-//         req.user = user;
-//         req.token = token;
-//         next();
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).send({
-//             error,
-//             message: 'Ha habido un problema con el token',
-//         });
-//     }
-// };
+        if (!token) {
+            return res.status(401).json({
+                success: false,
+                message: 'Token de acceso requerido',
+            });
+        }
 
-// const isAdmin = async (req, res, next) => {
-//     const admins = ['admin', 'superadmin'];
-//     if (!admins.includes(req.user.role)) {
-//         return res.status(403).send({
-//             message: 'No tienes permisos',
-//         });
-//     }
-//     next();
-// };
+        // Verificar token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-// module.exports = { authentication, isAdmin };
+        // Buscar usuario
+        const user = await Usuario.findOne({
+            where: { id_usuario: decoded.userId },
+            attributes: { exclude: ['password'] },
+        });
+
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                message: 'Token inválido - usuario no encontrado',
+            });
+        }
+
+        if (!user.active) {
+            return res.status(401).json({
+                success: false,
+                message: 'Usuario inactivo',
+            });
+        }
+
+        // Agregar usuario a la request
+        req.user = {
+            userId: user.id_usuario,
+            role: user.role,
+            username: user.username,
+            email: user.email,
+        };
+        next();
+    } catch (error) {
+        if (error.name === 'JsonWebTokenError') {
+            return res.status(401).json({
+                success: false,
+                message: 'Token inválido',
+            });
+        }
+
+        if (error.name === 'TokenExpiredError') {
+            return res.status(401).json({
+                success: false,
+                message: 'Token expirado',
+            });
+        }
+
+        return res.status(500).json({
+            success: false,
+            message: 'Error de autenticación',
+            error: error.message,
+        });
+    }
+};
+
+// Middleware de autorización por roles
+const authorize = (...roles) => {
+    return (req, res, next) => {
+        if (!req.user) {
+            return res.status(401).json({
+                success: false,
+                message: 'Acceso no autorizado',
+            });
+        }
+
+        if (!roles.includes(req.user.role)) {
+            return res.status(403).json({
+                success: false,
+                message: 'No tienes permisos para acceder a este recurso',
+            });
+        }
+
+        next();
+    };
+};
+
+// Middleware para verificar si es administrador
+const requireAdmin = authorize('administrador');
+
+// Middleware para verificar si es conductor
+const requireConductor = authorize('conductor');
+
+// Middleware para verificar si es administrador o conductor
+const requireAdminOrConductor = authorize('administrador', 'conductor');
+
+module.exports = {
+    authenticateToken,
+    authorize,
+    requireAdmin,
+    requireConductor,
+    requireAdminOrConductor,
+};

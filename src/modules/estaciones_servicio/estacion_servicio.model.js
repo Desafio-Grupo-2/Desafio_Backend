@@ -1,76 +1,75 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../../config/database');
 
-const Ticket = sequelize.define(
-    'Ticket',
+const EstacionServicio = sequelize.define(
+    'EstacionServicio',
     {
-        id: {
+        id_estacion: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
         },
-        id_ruta: {
+        id_ticket: {
             type: DataTypes.INTEGER,
-            allowNull: false,
+            allowNull: true,
             references: {
-                model: 'ruta',
+                model: 'ticket',
                 key: 'id',
             },
         },
-        fecha: {
+        Rotulo: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        CoordenadaXDec: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+        },
+        CoordenadaYDec: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+        },
+        Direccion: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        CCAA: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        Provincia: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        Municipio: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        Localidad: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        Fechapvp: {
             type: DataTypes.DATE,
             allowNull: true,
         },
-        tipocarburante: {
+        Horapvp: {
             type: DataTypes.STRING,
             allowNull: true,
         },
-        precioporlitro: {
-            type: DataTypes.INTEGER,
-            allowNull: true,
-        },
-        coordenadas: {
+        Horario: {
             type: DataTypes.STRING,
             allowNull: true,
         },
-        litroscoche: {
+        codpostal: {
             type: DataTypes.INTEGER,
             allowNull: true,
-        },
-        litrosbus: {
-            type: DataTypes.INTEGER,
-            allowNull: true,
-        },
-        importecoche_euros: {
-            type: DataTypes.INTEGER,
-            allowNull: true,
-        },
-        importebus_euros: {
-            type: DataTypes.INTEGER,
-            allowNull: true,
-        },
-        latitud: {
-            type: DataTypes.INTEGER,
-            allowNull: true,
-        },
-        longitud: {
-            type: DataTypes.INTEGER,
-            allowNull: true,
-        },
-        pdf: {
-            type: DataTypes.STRING,
-            allowNull: true,
-        },
-        'Precio por Litro': {
-            type: DataTypes.INTEGER,
-            allowNull: true,
-            field: 'Precio por Litro',
         },
     },
     {
-        tableName: 'ticket',
+        tableName: 'estacion_servicio',
         timestamps: false,
     }
 );
 
-module.exports = Ticket;
+module.exports = EstacionServicio;

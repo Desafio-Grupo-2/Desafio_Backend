@@ -1,11 +1,11 @@
-const { Ticket, Ruta, EstacionServicio } = require('../../models');
+const { Ruta, Vehiculo, Usuario, Ticket } = require('../../models');
 
-const getAllTickets = async (req, res) => {
+const getAllRutas = async (req, res) => {
     try {
         const { page = 1, limit = 10 } = req.query;
         const offset = (page - 1) * limit;
 
-        const tickets = await Ticket.findAndCountAll({
+        const rutas = await Ruta.findAndCountAll({
             limit: parseInt(limit),
             offset: parseInt(offset),
             order: [['id', 'DESC']]
@@ -13,57 +13,57 @@ const getAllTickets = async (req, res) => {
 
         res.json({
             success: true,
-            data: tickets.rows,
+            data: rutas.rows,
             pagination: {
-                total: tickets.count,
+                total: rutas.count,
                 page: parseInt(page),
                 limit: parseInt(limit),
-                totalPages: Math.ceil(tickets.count / limit)
+                totalPages: Math.ceil(rutas.count / limit)
             }
         });
     } catch (error) {
-        console.error('Error al obtener tickets:', error);
+        console.error('Error al obtener rutas:', error);
         res.status(500).json({
             success: false,
-            message: 'Error al obtener tickets'
+            message: 'Error al obtener rutas'
         });
     }
 };
 
-const getTicketById = async (req, res) => {
+const getRutaById = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const ticket = await Ticket.findByPk(id);
+        const ruta = await Ruta.findByPk(id);
 
-        if (!ticket) {
+        if (!ruta) {
             return res.status(404).json({
                 success: false,
-                message: 'Ticket no encontrado'
+                message: 'Ruta no encontrada'
             });
         }
 
         res.json({
             success: true,
-            data: ticket
+            data: ruta
         });
     } catch (error) {
-        console.error('Error al obtener ticket:', error);
+        console.error('Error al obtener ruta:', error);
         res.status(500).json({
             success: false,
-            message: 'Error al obtener ticket'
+            message: 'Error al obtener ruta'
         });
     }
 };
 
-const getTicketsByRuta = async (req, res) => {
+const getRutasByVehiculo = async (req, res) => {
     try {
-        const { rutaId } = req.params;
+        const { matricula } = req.params;
         const { page = 1, limit = 10 } = req.query;
         const offset = (page - 1) * limit;
 
-        const tickets = await Ticket.findAndCountAll({
-            where: { id_ruta: rutaId },
+        const rutas = await Ruta.findAndCountAll({
+            where: { matricula },
             limit: parseInt(limit),
             offset: parseInt(offset),
             order: [['id', 'DESC']]
@@ -71,25 +71,25 @@ const getTicketsByRuta = async (req, res) => {
 
         res.json({
             success: true,
-            data: tickets.rows,
+            data: rutas.rows,
             pagination: {
-                total: tickets.count,
+                total: rutas.count,
                 page: parseInt(page),
                 limit: parseInt(limit),
-                totalPages: Math.ceil(tickets.count / limit)
+                totalPages: Math.ceil(rutas.count / limit)
             }
         });
     } catch (error) {
-        console.error('Error al obtener tickets por ruta:', error);
+        console.error('Error al obtener rutas por vehículo:', error);
         res.status(500).json({
             success: false,
-            message: 'Error al obtener tickets por ruta'
+            message: 'Error al obtener rutas por vehículo'
         });
     }
 };
 
 module.exports = {
-    getAllTickets,
-    getTicketById,
-    getTicketsByRuta
+    getAllRutas,
+    getRutaById,
+    getRutasByVehiculo
 };

@@ -1,0 +1,1121 @@
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+		"name": "Desafío Tripulaciones API",
+		"description": "Colección completa para probar la API del Desafío Tripulaciones - Sistema de gestión de usuarios y autenticación",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12345678"
+	},
+	"item": [
+		{
+			"name": "Auth - Autenticación",
+			"item": [
+				{
+					"name": "Register - Registrar Usuario",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"conductor1\",\n  \"email\": \"conductor1@example.com\",\n  \"password\": \"password123\",\n  \"nombre\": \"Juan\",\n  \"apellido\": \"Pérez\",\n  \"role\": \"conductor\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Registra un nuevo usuario en el sistema"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Admin - Registrar Administrador",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"admin1\",\n  \"email\": \"admin1@example.com\",\n  \"password\": \"admin123456\",\n  \"nombre\": \"María\",\n  \"apellido\": \"García\",\n  \"role\": \"administrador\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Registra un nuevo administrador en el sistema"
+					},
+					"response": []
+				},
+				{
+					"name": "Login - Iniciar Sesión (Conductor)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"carlosgarcia@gmail.com\",\n  \"password\": \"NewPassword123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Inicia sesión con un conductor existente (contraseña hasheada)"
+					},
+					"response": []
+				},
+				{
+					"name": "Admin Login - Login Administrador",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"sergionunez@deivibus.com\",\n  \"password\": \"Sergio01N\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/admin/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"admin",
+								"login"
+							]
+						},
+						"description": "Inicia sesión específicamente como administrador (credenciales reales)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Profile - Obtener Perfil",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/auth/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"profile"
+							]
+						},
+						"description": "Obtiene el perfil del usuario autenticado"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile - Actualizar Perfil",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"conductor1_updated\",\n  \"nombre\": \"Juan Carlos\",\n  \"apellido\": \"Pérez López\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"profile"
+							]
+						},
+						"description": "Actualiza el perfil del usuario autenticado"
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password - Cambiar Contraseña (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"newPassword\": \"NewSecurePassword123\",\n  \"userId\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/change-password",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"change-password"
+							]
+						},
+						"description": "Cambia la contraseña de un usuario (solo administradores). La nueva contraseña se hashea automáticamente con bcrypt."
+					},
+					"response": []
+				},
+				{
+					"name": "Logout - Cerrar Sesión",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/auth/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"logout"
+							]
+						},
+						"description": "Cierra la sesión del usuario autenticado"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints de autenticación y autorización"
+		},
+		{
+			"name": "Users - Gestión de Usuarios",
+			"item": [
+				{
+					"name": "Get All Users - Obtener Todos los Usuarios",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users?page=1&limit=10&role=conductor&search=Juan",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "role",
+									"value": "conductor"
+								},
+								{
+									"key": "search",
+									"value": "Juan"
+								}
+							]
+						},
+						"description": "Obtiene una lista paginada de todos los usuarios (solo administradores)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by ID - Obtener Usuario por ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"1"
+							]
+						},
+						"description": "Obtiene un usuario específico por su ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Create User - Crear Usuario",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"conductor2\",\n  \"email\": \"conductor2@example.com\",\n  \"password\": \"password123\",\n  \"nombre\": \"Carlos\",\n  \"apellido\": \"Rodríguez\",\n  \"role\": \"conductor\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						},
+						"description": "Crea un nuevo usuario (solo administradores)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update User - Actualizar Usuario",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"conductor1_updated\",\n  \"nombre\": \"Juan Carlos\",\n  \"apellido\": \"Pérez López\",\n  \"role\": \"conductor\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"1"
+							]
+						},
+						"description": "Actualiza un usuario existente"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User - Eliminar Usuario",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"2"
+							]
+						},
+						"description": "Elimina un usuario (solo administradores)"
+					},
+					"response": []
+				},
+				{
+					"name": "Toggle User Status - Cambiar Estado Usuario",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/1/toggle-status",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"1",
+								"toggle-status"
+							]
+						},
+						"description": "Activa/desactiva un usuario (solo administradores)"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints para gestión de usuarios"
+		},
+		{
+			"name": "Vehiculos - Gestión de Vehículos",
+			"item": [
+				{
+					"name": "Get All Vehiculos - Obtener Todos los Vehículos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/vehiculos?page=1&limit=10&search=Toyota&marca=Toyota&tipo=Turismo",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"vehiculos"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "search",
+									"value": "Toyota"
+								},
+								{
+									"key": "marca",
+									"value": "Toyota"
+								},
+								{
+									"key": "tipo",
+									"value": "Turismo"
+								}
+							]
+						},
+						"description": "Obtiene una lista paginada de todos los vehículos con filtros (solo administradores)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Vehiculo by Matricula - Obtener Vehículo por Matrícula",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/vehiculos/TEST-001",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"vehiculos",
+								"TEST-001"
+							]
+						},
+						"description": "Obtiene un vehículo específico por su matrícula"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Vehiculo - Crear Vehículo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"matricula\": \"TEST-002\",\n  \"id_usuario\": 1,\n  \"marca\": \"Honda\",\n  \"modelo\": \"Civic\",\n  \"etiqueta\": \"ECO\",\n  \"tipo\": \"Turismo\",\n  \"consumo_min\": 6,\n  \"consumo_max\": 8,\n  \"emisiones_min\": 105,\n  \"emisiones_max\": 130,\n  \"motorizacion\": \"Híbrido\",\n  \"km\": 30000,\n  \"kw_minimo\": 90,\n  \"kw_maximo\": 120\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/vehiculos",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"vehiculos"
+							]
+						},
+						"description": "Crea un nuevo vehículo (solo administradores)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Vehiculo - Actualizar Vehículo",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"marca\": \"Toyota\",\n  \"modelo\": \"Corolla Hybrid\",\n  \"etiqueta\": \"ECO\",\n  \"km\": 55000\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/vehiculos/TEST-001",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"vehiculos",
+								"TEST-001"
+							]
+						},
+						"description": "Actualiza un vehículo existente (solo administradores)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Vehiculo - Eliminar Vehículo",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/vehiculos/TEST-002",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"vehiculos",
+								"TEST-002"
+							]
+						},
+						"description": "Elimina un vehículo (solo administradores)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Vehiculos by Usuario - Vehículos de Usuario",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/vehiculos/usuario/1?page=1&limit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"vehiculos",
+								"usuario",
+								"1"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Obtiene todos los vehículos de un usuario específico"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints para gestión de vehículos"
+		},
+		{
+			"name": "Health Check - Verificación de Estado",
+			"item": [
+				{
+					"name": "API Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"health"
+							]
+						},
+						"description": "Verifica el estado de la API"
+					},
+					"response": []
+				},
+				{
+					"name": "Swagger Documentation",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api-docs",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api-docs"
+							]
+						},
+						"description": "Accede a la documentación de Swagger"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints de verificación y documentación"
+		},
+		{
+			"name": "Rutas - Consulta de Rutas",
+			"item": [
+				{
+					"name": "Get All Rutas - Obtener Todas las Rutas",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/rutas?page=1&limit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"rutas"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Obtiene una lista paginada de todas las rutas almacenadas en la base de datos"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Ruta by ID - Obtener Ruta por ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/rutas/5",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"rutas",
+								"5"
+							]
+						},
+						"description": "Obtiene una ruta específica por su ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Rutas by Vehiculo - Obtener Rutas por Vehículo",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/rutas/vehiculo/0004%20AAA?page=1&limit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"rutas",
+								"vehiculo",
+								"0004 AAA"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Obtiene todas las rutas asociadas a un vehículo específico por su matrícula"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tickets - Consulta de Tickets",
+			"item": [
+				{
+					"name": "Get All Tickets - Obtener Todos los Tickets",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/tickets?page=1&limit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"tickets"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Obtiene una lista paginada de todos los tickets almacenados en la base de datos"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Ticket by ID - Obtener Ticket por ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/tickets/366746",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"tickets",
+								"366746"
+							]
+						},
+						"description": "Obtiene un ticket específico por su ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Tickets by Ruta - Obtener Tickets por Ruta",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/tickets/ruta/5?page=1&limit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"tickets",
+								"ruta",
+								"5"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Obtiene todos los tickets asociados a una ruta específica por su ID"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Security Testing - Pruebas de Seguridad",
+			"item": [
+				{
+					"name": "Register New User - Contraseña Hasheada",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"testuser2\",\n  \"email\": \"testuser2@example.com\",\n  \"password\": \"TestPassword123\",\n  \"nombre\": \"Test\",\n  \"apellido\": \"User2\",\n  \"role\": \"conductor\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Registra un nuevo usuario para probar el hasheo automático de contraseñas"
+					},
+					"response": []
+				},
+				{
+					"name": "Login New User - Verificar Hasheo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"testuser2@example.com\",\n  \"password\": \"TestPassword123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Verifica que el login funciona con contraseña hasheada"
+					},
+					"response": []
+				},
+				{
+					"name": "Test Password Complexity - Contraseña Débil",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"weakuser\",\n  \"email\": \"weak@example.com\",\n  \"password\": \"123\",\n  \"nombre\": \"Weak\",\n  \"apellido\": \"User\",\n  \"role\": \"conductor\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Prueba validación de contraseña débil (debería fallar)"
+					},
+					"response": []
+				}
+			],
+			"description": "Pruebas específicas de seguridad y hasheo de contraseñas"
+		},
+		{
+			"name": "Error Testing - Pruebas de Error",
+			"item": [
+				{
+					"name": "Invalid Login - Login Inválido",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"invalid@example.com\",\n  \"password\": \"wrongpassword\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Prueba login con credenciales inválidas"
+					},
+					"response": []
+				},
+				{
+					"name": "Unauthorized Access - Acceso No Autorizado",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						},
+						"description": "Prueba acceso sin token de autorización"
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Token - Token Inválido",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer invalid_token_here"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/auth/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"profile"
+							]
+						},
+						"description": "Prueba acceso con token inválido"
+					},
+					"response": []
+				},
+				{
+					"name": "Conductor Access Admin Route - Conductor Accede a Ruta Admin",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						},
+						"description": "Prueba que un conductor no puede acceder a rutas de administrador"
+					},
+					"response": []
+				}
+			],
+			"description": "Pruebas de manejo de errores y validaciones de seguridad"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJjb25kdWN0b3IiLCJpYXQiOjE3NTg3OTIzMDIsImV4cCI6MTc1ODc5NTkwMn0.9mo7g4vsrmaGVx8LkIb7UwD7fjVUehq2HS4Uig5bbUY",
+			"type": "string",
+			"description": "Token JWT para usuarios conductores"
+		},
+		{
+			"key": "admin_token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjExLCJyb2xlIjoiYWRtaW5pc3RyYWRvciIsImlhdCI6MTc1ODc5MjI2OSwiZXhwIjoxNzU4Nzk1ODY5fQ.EkyYaxVVrT_FdxkfoNpK6rbGno4p7E2-UFsnejfsms8",
+			"type": "string",
+			"description": "Token JWT para usuarios administradores"
+		}
+	]
+}
+
