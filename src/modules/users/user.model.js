@@ -2,14 +2,22 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../../config/database');
 const bcrypt = require('bcryptjs');
 
-//Cambiar cuando tengamos la bbdd real
-const User = sequelize.define(
-    'User',
+const Usuario = sequelize.define(
+    'Usuario',
     {
-        id: {
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
+        id_usuario: {
+            type: DataTypes.INTEGER,
             primaryKey: true,
+            autoIncrement: true,
+        },
+        username: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true,
+        },
+        password: {
+            type: DataTypes.STRING,
+            allowNull: false,
         },
         email: {
             type: DataTypes.STRING,
@@ -19,51 +27,26 @@ const User = sequelize.define(
                 isEmail: true,
             },
         },
-        password: {
+        nombre: {
             type: DataTypes.STRING,
             allowNull: false,
-            validate: {
-                len: [6, 100],
-            },
         },
-        firstName: {
+        apellido: {
             type: DataTypes.STRING,
             allowNull: false,
-            field: 'first_name',
-        },
-        lastName: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            field: 'last_name',
-        },
-        phone: {
-            type: DataTypes.STRING,
-            allowNull: true,
-            validate: {
-                is: /^[\+]?[1-9][\d]{0,15}$/,
-            },
         },
         role: {
-            type: DataTypes.ENUM('admin', 'empleado'),
+            type: DataTypes.STRING,
             allowNull: false,
-            defaultValue: 'empleado',
+            defaultValue: 'usuario',
         },
-        isActive: {
+        active: {
             type: DataTypes.BOOLEAN,
             defaultValue: true,
-            field: 'is_active',
-        },
-        lastLogin: {
-            type: DataTypes.DATE,
-            field: 'last_login',
-        },
-        profileImage: {
-            type: DataTypes.STRING,
-            field: 'profile_image',
         },
     },
     {
-        tableName: 'users',
+        tableName: 'usuario',
         hooks: {
             beforeCreate: async user => {
                 if (user.password) {
@@ -80,13 +63,13 @@ const User = sequelize.define(
 );
 
 // Método para verificar contraseña
-User.prototype.checkPassword = async function (password) {
+Usuario.prototype.checkPassword = async function (password) {
     return await bcrypt.compare(password, this.password);
 };
 
 // Método para obtener nombre completo
-User.prototype.getFullName = function () {
-    return `${this.firstName} ${this.lastName}`;
+Usuario.prototype.getFullName = function () {
+    return `${this.nombre} ${this.apellido}`;
 };
 
-module.exports = User;
+module.exports = Usuario;
