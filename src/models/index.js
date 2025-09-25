@@ -19,18 +19,20 @@ Ruta.belongsTo(Vehiculo, { foreignKey: 'matricula', as: 'vehiculo' });
 Ruta.hasMany(Ticket, { foreignKey: 'id_ruta', as: 'tickets' });
 Ticket.belongsTo(Ruta, { foreignKey: 'id_ruta', as: 'ruta' });
 
-Ticket.hasMany(EstacionServicio, { foreignKey: 'id_ticket', as: 'estaciones' });
-EstacionServicio.belongsTo(Ticket, { foreignKey: 'id_ticket', as: 'ticket' });
+// Relaciones de estaciones de servicio comentadas temporalmente
+// EstacionServicio.hasMany(Ticket, { foreignKey: 'id_estacion', as: 'tickets' });
+// Ticket.belongsTo(EstacionServicio, { foreignKey: 'id_estacion', as: 'estacion' });
 
-EstacionServicio.hasMany(TipoCombustible, { foreignKey: 'id_estacion', as: 'combustibles' });
-TipoCombustible.belongsTo(EstacionServicio, { foreignKey: 'id_estacion', as: 'estacion' });
+// EstacionServicio.hasMany(TipoCombustible, { foreignKey: 'id_estacion', as: 'combustibles' });
+// TipoCombustible.belongsTo(EstacionServicio, { foreignKey: 'id_estacion', as: 'estacion' });
 
-const syncModels = async () => {
+const loadModels = async () => {
     try {
-        await sequelize.sync({ alter: false });
-        console.log('Modelos sincronizados correctamente');
+        await sequelize.authenticate();
+        console.log('Conexión a la base de datos establecida correctamente');
+        console.log('Modelos cargados correctamente (sin sincronización)');
     } catch (error) {
-        console.error('Error al sincronizar modelos:', error);
+        console.error('Error al cargar modelos:', error);
         throw error;
     }
 };
@@ -43,5 +45,5 @@ module.exports = {
     Ticket,
     EstacionServicio,
     TipoCombustible,
-    syncModels,
+    loadModels,
 };
