@@ -436,6 +436,209 @@
 			"description": "Endpoints para gestión de usuarios"
 		},
 		{
+			"name": "Vehiculos - Gestión de Vehículos",
+			"item": [
+				{
+					"name": "Get All Vehiculos - Obtener Todos los Vehículos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/vehiculos?page=1&limit=10&search=Toyota&marca=Toyota&tipo=Turismo",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"vehiculos"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "search",
+									"value": "Toyota"
+								},
+								{
+									"key": "marca",
+									"value": "Toyota"
+								},
+								{
+									"key": "tipo",
+									"value": "Turismo"
+								}
+							]
+						},
+						"description": "Obtiene una lista paginada de todos los vehículos con filtros (solo administradores)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Vehiculo by Matricula - Obtener Vehículo por Matrícula",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/vehiculos/TEST-001",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"vehiculos",
+								"TEST-001"
+							]
+						},
+						"description": "Obtiene un vehículo específico por su matrícula"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Vehiculo - Crear Vehículo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"matricula\": \"TEST-002\",\n  \"id_usuario\": 1,\n  \"marca\": \"Honda\",\n  \"modelo\": \"Civic\",\n  \"etiqueta\": \"ECO\",\n  \"tipo\": \"Turismo\",\n  \"consumo_min\": 6,\n  \"consumo_max\": 8,\n  \"emisiones_min\": 105,\n  \"emisiones_max\": 130,\n  \"motorizacion\": \"Híbrido\",\n  \"km\": 30000,\n  \"kw_minimo\": 90,\n  \"kw_maximo\": 120\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/vehiculos",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"vehiculos"
+							]
+						},
+						"description": "Crea un nuevo vehículo (solo administradores)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Vehiculo - Actualizar Vehículo",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"marca\": \"Toyota\",\n  \"modelo\": \"Corolla Hybrid\",\n  \"etiqueta\": \"ECO\",\n  \"km\": 55000\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/vehiculos/TEST-001",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"vehiculos",
+								"TEST-001"
+							]
+						},
+						"description": "Actualiza un vehículo existente (solo administradores)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Vehiculo - Eliminar Vehículo",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/vehiculos/TEST-002",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"vehiculos",
+								"TEST-002"
+							]
+						},
+						"description": "Elimina un vehículo (solo administradores)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Vehiculos by Usuario - Vehículos de Usuario",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/vehiculos/usuario/1?page=1&limit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"vehiculos",
+								"usuario",
+								"1"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Obtiene todos los vehículos de un usuario específico"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints para gestión de vehículos"
+		},
+		{
 			"name": "Health Check - Verificación de Estado",
 			"item": [
 				{
@@ -703,13 +906,13 @@
 		},
 		{
 			"key": "auth_token",
-			"value": "",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJjb25kdWN0b3IiLCJpYXQiOjE3NTg3OTIzMDIsImV4cCI6MTc1ODc5NTkwMn0.9mo7g4vsrmaGVx8LkIb7UwD7fjVUehq2HS4Uig5bbUY",
 			"type": "string",
 			"description": "Token JWT para usuarios conductores"
 		},
 		{
 			"key": "admin_token",
-			"value": "",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjExLCJyb2xlIjoiYWRtaW5pc3RyYWRvciIsImlhdCI6MTc1ODc5MjI2OSwiZXhwIjoxNzU4Nzk1ODY5fQ.EkyYaxVVrT_FdxkfoNpK6rbGno4p7E2-UFsnejfsms8",
 			"type": "string",
 			"description": "Token JWT para usuarios administradores"
 		}

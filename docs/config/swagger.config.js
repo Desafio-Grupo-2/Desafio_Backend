@@ -44,7 +44,11 @@ const swaggerConfig = {
             {
                 name: 'Users',
                 description:
-                    'Gestión de usuarios (conductores y jefe de flota)',
+                    'Gestión de usuarios (conductores y administradores)',
+            },
+            {
+                name: 'Vehiculos',
+                description: 'Gestión de vehículos',
             },
         ],
     },
