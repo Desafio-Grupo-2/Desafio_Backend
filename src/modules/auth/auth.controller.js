@@ -1,46 +1,71 @@
 const jwt = require('jsonwebtoken');
-const { User } = require('../../models');
+const { Usuario } = require('../../models');
+const { 
+    logFailedLogin, 
+    logSuccessfulLogin, 
+    logRegistration, 
+    logSecurityError,
+    logSecurityEvent
+} = require('../../utils/securityLogger');
 
-// Generar token JWT
-const generateToken = userId => {
-    return jwt.sign({ userId }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRES_IN || '1h',
-    });
+// Generar token JWT con expiración corta
+const generateToken = (userId, role = 'conductor') => {
+    return jwt.sign(
+        { userId, role }, 
+        process.env.JWT_SECRET, 
+        { expiresIn: process.env.JWT_EXPIRES_IN || '1h' }
+    );
 };
 
 // Registrar nuevo usuario
 const register = async (req, res) => {
     try {
         const {
+            username,
             email,
             password,
-            firstName,
-            lastName,
-            phone,
-            role = 'empleado',
+            nombre,
+            apellido,
+            role = 'conductor',
         } = req.body;
 
-        // Verificar si el usuario ya existe
-        const existingUser = await User.findOne({ where: { email } });
+        const clientIp = req.ip || req.connection.remoteAddress;
+        const userAgent = req.get('User-Agent');
+
+        // Verificar si el usuario ya existe por email o username
+        const { Op } = require('sequelize');
+        const existingUser = await Usuario.findOne({ 
+            where: { 
+                [Op.or]: [
+                    { email },
+                    { username }
+                ]
+            } 
+        });
+        
         if (existingUser) {
             return res.status(409).json({
                 success: false,
-                message: 'El usuario ya existe con este email',
+                message: 'El usuario ya existe con este email o nombre de usuario',
             });
         }
 
         // Crear nuevo usuario
-        const user = await User.create({
+        const user = await Usuario.create({
+            username,
             email,
             password,
-            firstName,
-            lastName,
-            phone,
+            nombre,
+            apellido,
             role,
+            active: true,
         });
 
+        // Log de registro
+        logRegistration(user.id_usuario, email, clientIp);
+
         // Generar token
-        const token = generateToken(user.id);
+        const token = generateToken(user.id_usuario, user.role);
 
         // Remover contraseña de la respuesta
         const userResponse = user.toJSON();
@@ -55,10 +80,10 @@ const register = async (req, res) => {
             },
         });
     } catch (error) {
+        logSecurityError(error, { action: 'register', ip: req.ip });
         res.status(400).json({
             success: false,
             message: 'Error al registrar usuario',
-            error: error.message,
         });
     }
 };
@@ -67,10 +92,13 @@ const register = async (req, res) => {
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
+        const clientIp = req.ip || req.connection.remoteAddress;
+        const userAgent = req.get('User-Agent');
 
         // Buscar usuario por email
-        const user = await User.findOne({ where: { email } });
+        const user = await Usuario.findOne({ where: { email } });
         if (!user) {
+            logFailedLogin(email, clientIp, userAgent);
             return res.status(401).json({
                 success: false,
                 message: 'Credenciales inválidas',
@@ -78,7 +106,8 @@ const login = async (req, res) => {
         }
 
         // Verificar si el usuario está activo
-        if (!user.isActive) {
+        if (!user.active) {
+            logFailedLogin(email, clientIp, userAgent);
             return res.status(401).json({
                 success: false,
                 message: 'Usuario inactivo',
@@ -88,17 +117,18 @@ const login = async (req, res) => {
         // Verificar contraseña
         const isValidPassword = await user.checkPassword(password);
         if (!isValidPassword) {
+            logFailedLogin(email, clientIp, userAgent);
             return res.status(401).json({
                 success: false,
                 message: 'Credenciales inválidas',
             });
         }
 
-        // Actualizar último login
-        await user.update({ lastLogin: new Date() });
+        // Log de login exitoso
+        logSuccessfulLogin(user.id_usuario, email, clientIp);
 
         // Generar token
-        const token = generateToken(user.id);
+        const token = generateToken(user.id_usuario, user.role);
 
         // Remover contraseña de la respuesta
         const userResponse = user.toJSON();
@@ -113,10 +143,10 @@ const login = async (req, res) => {
             },
         });
     } catch (error) {
+        logSecurityError(error, { action: 'login', ip: req.ip });
         res.status(500).json({
             success: false,
             message: 'Error al iniciar sesión',
-            error: error.message,
         });
     }
 };
@@ -124,8 +154,9 @@ const login = async (req, res) => {
 // Obtener perfil del usuario actual
 const getProfile = async (req, res) => {
     try {
-        const userId = req.user.id;
-        const user = await User.findByPk(userId, {
+        const userId = req.user.userId;
+        const user = await Usuario.findOne({ 
+            where: { id_usuario: userId },
             attributes: { exclude: ['password'] },
         });
 
@@ -141,10 +172,10 @@ const getProfile = async (req, res) => {
             data: user,
         });
     } catch (error) {
+        logSecurityError(error, { action: 'getProfile', userId: req.user?.userId });
         res.status(500).json({
             success: false,
             message: 'Error al obtener perfil',
-            error: error.message,
         });
     }
 };
@@ -152,16 +183,16 @@ const getProfile = async (req, res) => {
 // Actualizar perfil
 const updateProfile = async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.user.userId;
         const updateData = req.body;
 
-        // No permitir actualizar ciertos campos
-        delete updateData.id;
+        // No permitir actualizar ciertos campos sensibles
+        delete updateData.id_usuario;
         delete updateData.password;
         delete updateData.role;
-        delete updateData.isActive;
+        delete updateData.active;
 
-        const user = await User.findByPk(userId);
+        const user = await Usuario.findByPk(userId);
         if (!user) {
             return res.status(404).json({
                 success: false,
@@ -181,21 +212,32 @@ const updateProfile = async (req, res) => {
             data: userResponse,
         });
     } catch (error) {
+        logSecurityError(error, { action: 'updateProfile', userId: req.user?.userId });
         res.status(400).json({
             success: false,
             message: 'Error al actualizar perfil',
-            error: error.message,
         });
     }
 };
 
-// Cambiar contraseña
+// Cambiar contraseña (solo administradores)
 const changePassword = async (req, res) => {
     try {
-        const userId = req.user.id;
-        const { currentPassword, newPassword } = req.body;
+        // Verificar que sea administrador
+        if (req.user.role !== 'administrador') {
+            return res.status(403).json({
+                success: false,
+                message: 'Acceso denegado. Solo los administradores pueden cambiar contraseñas',
+            });
+        }
 
-        const user = await User.findByPk(userId);
+        const { userId, newPassword } = req.body;
+        const adminId = req.user.userId;
+
+        // Si no se especifica userId, cambiar la contraseña del administrador actual
+        const targetUserId = userId || adminId;
+
+        const user = await Usuario.findByPk(targetUserId);
         if (!user) {
             return res.status(404).json({
                 success: false,
@@ -203,27 +245,27 @@ const changePassword = async (req, res) => {
             });
         }
 
-        // Verificar contraseña actual
-        const isValidPassword = await user.checkPassword(currentPassword);
-        if (!isValidPassword) {
-            return res.status(400).json({
-                success: false,
-                message: 'Contraseña actual incorrecta',
-            });
-        }
-
-        // Actualizar contraseña
+        // Actualizar contraseña (se encriptará automáticamente por el hook)
         await user.update({ password: newPassword });
+
+        // Log de cambio de contraseña
+        logSecurityEvent('PASSWORD_CHANGED', {
+            adminId,
+            targetUserId,
+            targetEmail: user.email,
+            ip: req.ip,
+            severity: 'HIGH'
+        });
 
         res.json({
             success: true,
             message: 'Contraseña actualizada exitosamente',
         });
     } catch (error) {
+        logSecurityError(error, { action: 'changePassword', userId: req.user?.userId });
         res.status(400).json({
             success: false,
             message: 'Error al cambiar contraseña',
-            error: error.message,
         });
     }
 };
@@ -239,10 +281,13 @@ const logout = async (req, res) => {
 const adminLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
+        const clientIp = req.ip || req.connection.remoteAddress;
+        const userAgent = req.get('User-Agent');
 
         // Buscar usuario por email
-        const user = await User.findOne({ where: { email } });
+        const user = await Usuario.findOne({ where: { email } });
         if (!user) {
+            logFailedLogin(email, clientIp, userAgent);
             return res.status(401).json({
                 success: false,
                 message: 'Credenciales inválidas',
@@ -250,7 +295,8 @@ const adminLogin = async (req, res) => {
         }
 
         // Verificar si el usuario está activo
-        if (!user.isActive) {
+        if (!user.active) {
+            logFailedLogin(email, clientIp, userAgent);
             return res.status(401).json({
                 success: false,
                 message: 'Usuario inactivo',
@@ -260,50 +306,45 @@ const adminLogin = async (req, res) => {
         // Verificar contraseña
         const isValidPassword = await user.checkPassword(password);
         if (!isValidPassword) {
+            logFailedLogin(email, clientIp, userAgent);
             return res.status(401).json({
                 success: false,
                 message: 'Credenciales inválidas',
             });
         }
 
-        // Verificar que sea admin
-        if (user.role !== 'admin') {
+        // Verificar que sea administrador
+        if (user.role !== 'administrador') {
+            logFailedLogin(email, clientIp, userAgent);
             return res.status(403).json({
                 success: false,
                 message: 'Acceso denegado. Se requiere rol de administrador',
             });
         }
 
-        // Actualizar último login
-        await user.update({ lastLogin: new Date() });
+        // Log de login exitoso
+        logSuccessfulLogin(user.id_usuario, email, clientIp);
 
         // Generar token JWT
-        const token = jwt.sign(
-            { userId: user.id, email: user.email, role: user.role },
-            process.env.JWT_SECRET,
-            { expiresIn: process.env.JWT_EXPIRES_IN || '1h' } //Corta duración
-        );
+        const token = generateToken(user.id_usuario, user.role);
+
+        // Remover contraseña de la respuesta
+        const userResponse = user.toJSON();
+        delete userResponse.password;
 
         res.json({
             success: true,
             message: 'Inicio de sesión de administrador exitoso',
             data: {
-                user: {
-                    id: user.id,
-                    email: user.email,
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    role: user.role,
-                    isActive: user.isActive,
-                },
+                user: userResponse,
                 token,
             },
         });
     } catch (error) {
+        logSecurityError(error, { action: 'adminLogin', ip: req.ip });
         res.status(500).json({
             success: false,
             message: 'Error al iniciar sesión',
-            error: error.message,
         });
     }
 };

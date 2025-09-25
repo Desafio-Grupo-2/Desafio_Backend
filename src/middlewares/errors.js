@@ -1,3 +1,5 @@
+const { logSecurityError } = require('../utils/securityLogger');
+
 const handleValidationError = (err, res) => {
     let errors = err.errors.map(el => el.message);
     if (errors.length > 1) {
@@ -26,6 +28,15 @@ const errorHandler = (err, req, res, next) => {
         path: req.path,
         method: req.method,
     });
+
+    // Log de errores críticos de seguridad
+    if (err.status >= 500 || err.name === 'SequelizeConnectionError') {
+        logSecurityError(err, { 
+            path: req.path, 
+            method: req.method, 
+            ip: req.ip 
+        });
+    }
 
     // Error de validación de Sequelize
     if (

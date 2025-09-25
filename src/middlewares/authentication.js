@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { User } = require('../models');
+const { Usuario } = require('../models');
 
 // Middleware de autenticación
 const authenticateToken = async (req, res, next) => {
@@ -18,7 +18,8 @@ const authenticateToken = async (req, res, next) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         // Buscar usuario
-        const user = await User.findByPk(decoded.userId, {
+        const user = await Usuario.findOne({
+            where: { id_usuario: decoded.userId },
             attributes: { exclude: ['password'] },
         });
 
@@ -29,7 +30,7 @@ const authenticateToken = async (req, res, next) => {
             });
         }
 
-        if (!user.isActive) {
+        if (!user.active) {
             return res.status(401).json({
                 success: false,
                 message: 'Usuario inactivo',
@@ -37,7 +38,12 @@ const authenticateToken = async (req, res, next) => {
         }
 
         // Agregar usuario a la request
-        req.user = user;
+        req.user = {
+            userId: user.id_usuario,
+            role: user.role,
+            username: user.username,
+            email: user.email
+        };
         next();
     } catch (error) {
         if (error.name === 'JsonWebTokenError') {
@@ -83,19 +89,19 @@ const authorize = (...roles) => {
     };
 };
 
-// Middleware para verificar si es admin (jefe de flota)
-const requireAdmin = authorize('admin');
+// Middleware para verificar si es administrador
+const requireAdmin = authorize('administrador');
 
-// Middleware para verificar si es empleado (conductor)
-const requireEmpleado = authorize('empleado');
+// Middleware para verificar si es conductor
+const requireConductor = authorize('conductor');
 
-// Middleware para verificar si es admin o empleado
-const requireAdminOrEmpleado = authorize('admin', 'empleado');
+// Middleware para verificar si es administrador o conductor
+const requireAdminOrConductor = authorize('administrador', 'conductor');
 
 module.exports = {
     authenticateToken,
     authorize,
     requireAdmin,
-    requireEmpleado,
-    requireAdminOrEmpleado,
+    requireConductor,
+    requireAdminOrConductor,
 };

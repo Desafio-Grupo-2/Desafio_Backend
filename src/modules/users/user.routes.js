@@ -7,13 +7,11 @@ const {
     updateUser,
     deleteUser,
     toggleUserStatus,
-    getActiveDrivers,
-    getUserStats,
 } = require('./user.controller');
 const {
     authenticateToken,
     requireAdmin,
-    requireAdminOrEmpleado,
+    requireAdminOrConductor,
 } = require('../../middlewares/authentication');
 const {
     createUserValidation,
@@ -21,10 +19,6 @@ const {
     userIdValidation,
     getUsersValidation,
 } = require('./user.validation');
-
-// Las validaciones están importadas desde user.validation.js
-// Rutas públicas (solo para obtener conductores activos)
-router.get('/drivers', getActiveDrivers);
 
 // Rutas protegidas - Solo admin puede gestionar usuarios
 router.get(
@@ -34,7 +28,6 @@ router.get(
     getUsersValidation,
     getAllUsers
 );
-router.get('/stats', authenticateToken, requireAdmin, getUserStats);
 router.post(
     '/',
     authenticateToken,
@@ -45,14 +38,14 @@ router.post(
 router.get(
     '/:id',
     authenticateToken,
-    requireAdminOrEmpleado,
+    requireAdminOrConductor,
     userIdValidation,
     getUserById
 );
 router.put(
     '/:id',
     authenticateToken,
-    requireAdmin,
+    requireAdminOrConductor,
     userIdValidation,
     updateUserValidation,
     updateUser

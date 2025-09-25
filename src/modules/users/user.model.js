@@ -38,7 +38,7 @@ const Usuario = sequelize.define(
         role: {
             type: DataTypes.STRING,
             allowNull: false,
-            defaultValue: 'usuario',
+            defaultValue: 'conductor',
         },
         active: {
             type: DataTypes.BOOLEAN,
@@ -47,12 +47,15 @@ const Usuario = sequelize.define(
     },
     {
         tableName: 'usuario',
+        timestamps: false, // Desactivar createdAt y updatedAt automáticos
         hooks: {
+            // Hashear contraseñas solo para usuarios nuevos
             beforeCreate: async user => {
                 if (user.password) {
                     user.password = await bcrypt.hash(user.password, 12);
                 }
             },
+            // Hashear contraseñas solo cuando se actualiza la contraseña
             beforeUpdate: async user => {
                 if (user.changed('password')) {
                     user.password = await bcrypt.hash(user.password, 12);
@@ -64,6 +67,11 @@ const Usuario = sequelize.define(
 
 // Método para verificar contraseña
 Usuario.prototype.checkPassword = async function (password) {
+    // Si la contraseña almacenada tiene menos de 60 caracteres, está en texto plano
+    if (this.password.length < 60) {
+        return password === this.password;
+    }
+    // Si tiene 60+ caracteres, está hasheada con bcrypt
     return await bcrypt.compare(password, this.password);
 };
 

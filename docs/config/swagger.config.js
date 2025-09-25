@@ -27,7 +27,7 @@ const swaggerConfig = {
                     scheme: 'bearer',
                     bearerFormat: 'JWT',
                     description:
-                        'Token JWT obtenido del endpoint /api/v1/auth/login',
+                        'Token JWT obtenido del endpoint /api/auth/login',
                 },
             },
         },
