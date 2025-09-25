@@ -9,7 +9,7 @@ const {
     changePassword,
     logout,
 } = require('./auth.controller');
-const { authenticateToken } = require('../../middlewares/authentication');
+const { authenticateToken, requireAdmin } = require('../../middlewares/authentication');
 const {
     loginLimiter,
     registerLimiter,
@@ -19,6 +19,7 @@ const {
     registerValidation,
     loginValidation,
     changePasswordValidation,
+    updateProfileValidation,
 } = require('./auth.validation');
 
 // Rutas públicas con rate limiting
@@ -28,11 +29,12 @@ router.post('/admin/login', loginLimiter, loginValidation, adminLogin);
 
 // Rutas protegidas
 router.get('/profile', authenticateToken, getProfile);
-router.put('/profile', authenticateToken, updateProfile);
+router.put('/profile', authenticateToken, updateProfileValidation, updateProfile);
 router.post(
     '/change-password',
     passwordChangeLimiter,
     authenticateToken,
+    requireAdmin,
     changePasswordValidation,
     changePassword
 );

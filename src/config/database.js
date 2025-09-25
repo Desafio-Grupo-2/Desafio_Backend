@@ -19,4 +19,16 @@ const sequelize = new Sequelize(
     }
 );
 
-module.exports = sequelize;
+// Función para probar la conexión a la base de datos
+const testConnection = async () => {
+    try {
+        await sequelize.authenticate();
+        console.log('Conexión a la base de datos establecida correctamente');
+        return true;
+    } catch (error) {
+        console.error('Error al conectar con la base de datos:', error.message);
+        throw error;
+    }
+};
+
+module.exports = { sequelize, testConnection };
