@@ -6,7 +6,7 @@ const swaggerJsdoc = require('swagger-jsdoc');
 require('dotenv').config();
 
 const { testConnection } = require('./config/database');
-const { syncModels } = require('./models');
+const { loadModels } = require('./models');
 const errorHandler = require('./middlewares/errors');
 const { generalLimiter } = require('./middlewares/rateLimiter');
 
@@ -14,6 +14,8 @@ const { generalLimiter } = require('./middlewares/rateLimiter');
 const authRoutes = require('./modules/auth/auth.routes');
 const userRoutes = require('./modules/users/user.routes');
 const vehiculoRoutes = require('./modules/vehiculos/vehiculo.routes');
+const ticketRoutes = require('./modules/tickets/ticket.routes');
+const rutaRoutes = require('./modules/rutas/ruta.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -61,6 +63,8 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/vehiculos', vehiculoRoutes);
+app.use('/api/tickets', ticketRoutes);
+app.use('/api/rutas', rutaRoutes);
 
 // Ruta de salud
 app.get('/health', (req, res) => {
@@ -89,8 +93,8 @@ const startServer = async () => {
         // Probar conexión a la base de datos
         await testConnection();
 
-        // Sincronizar modelos
-        await syncModels();
+        // Cargar modelos
+        await loadModels();
 
         app.listen(PORT, () => {
             console.log(`Servidor ejecutándose en puerto ${PORT}`);

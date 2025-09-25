@@ -30,6 +30,16 @@ Esta colección de Postman contiene todos los endpoints implementados en la API 
 - **Delete Vehiculo - Eliminar Vehículo**: Elimina un vehículo (solo admin)
 - **Get Vehiculos by Usuario - Vehículos de Usuario**: Obtiene vehículos de un usuario específico
 
+### Rutas - Consulta de Rutas
+- **Get All Rutas - Obtener Todas las Rutas**: Lista paginada de todas las rutas almacenadas
+- **Get Ruta by ID - Obtener Ruta por ID**: Obtiene una ruta específica por su ID
+- **Get Rutas by Vehiculo - Obtener Rutas por Vehículo**: Lista rutas de un vehículo específico
+
+### Tickets - Consulta de Tickets
+- **Get All Tickets - Obtener Todos los Tickets**: Lista paginada de todos los tickets de combustible
+- **Get Ticket by ID - Obtener Ticket por ID**: Obtiene un ticket específico por su ID
+- **Get Tickets by Ruta - Obtener Tickets por Ruta**: Lista tickets de una ruta específica
+
 ### Health Check - Verificación de Estado
 - **API Health Check**: Verifica el estado de la API
 - **Swagger Documentation**: Accede a la documentación de Swagger
@@ -267,6 +277,28 @@ npm run dev
 - Revisar logs del servidor
 - Verificar conexión a la base de datos
 - Comprobar configuración de variables de entorno
+
+## Nuevos Endpoints - Rutas y Tickets
+
+### Endpoints de Rutas
+Los endpoints de rutas permiten consultar las rutas almacenadas en la base de datos:
+
+- **GET /api/rutas**: Obtiene todas las rutas con paginación
+- **GET /api/rutas/{id}**: Obtiene una ruta específica por ID
+- **GET /api/rutas/vehiculo/{matricula}**: Obtiene rutas de un vehículo específico
+
+### Endpoints de Tickets
+Los endpoints de tickets permiten consultar los tickets de combustible:
+
+- **GET /api/tickets**: Obtiene todos los tickets con paginación
+- **GET /api/tickets/{id}**: Obtiene un ticket específico por ID
+- **GET /api/tickets/ruta/{rutaId}**: Obtiene tickets de una ruta específica
+
+### Características de los Nuevos Endpoints
+- **Solo lectura**: Estos endpoints son de consulta únicamente
+- **Paginación**: Todos los endpoints de listado incluyen paginación
+- **Autenticación requerida**: Todos requieren token JWT válido
+- **Sin modificación de BD**: No modifican la estructura de la base de datos
 
 ## Soporte
 

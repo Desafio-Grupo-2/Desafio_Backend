@@ -50,6 +50,14 @@ const swaggerConfig = {
                 name: 'Vehiculos',
                 description: 'Gestión de vehículos',
             },
+            {
+                name: 'Rutas',
+                description: 'Consulta de rutas almacenadas',
+            },
+            {
+                name: 'Tickets',
+                description: 'Consulta de tickets de combustible',
+            },
         ],
     },
     apis: ['./docs/schemas/*.js', './docs/paths/*.js'],

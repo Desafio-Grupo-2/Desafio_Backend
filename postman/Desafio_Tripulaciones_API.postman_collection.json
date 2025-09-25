@@ -682,6 +682,206 @@
 			"description": "Endpoints de verificación y documentación"
 		},
 		{
+			"name": "Rutas - Consulta de Rutas",
+			"item": [
+				{
+					"name": "Get All Rutas - Obtener Todas las Rutas",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/rutas?page=1&limit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"rutas"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Obtiene una lista paginada de todas las rutas almacenadas en la base de datos"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Ruta by ID - Obtener Ruta por ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/rutas/5",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"rutas",
+								"5"
+							]
+						},
+						"description": "Obtiene una ruta específica por su ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Rutas by Vehiculo - Obtener Rutas por Vehículo",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/rutas/vehiculo/0004%20AAA?page=1&limit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"rutas",
+								"vehiculo",
+								"0004 AAA"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Obtiene todas las rutas asociadas a un vehículo específico por su matrícula"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tickets - Consulta de Tickets",
+			"item": [
+				{
+					"name": "Get All Tickets - Obtener Todos los Tickets",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/tickets?page=1&limit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"tickets"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Obtiene una lista paginada de todos los tickets almacenados en la base de datos"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Ticket by ID - Obtener Ticket por ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/tickets/366746",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"tickets",
+								"366746"
+							]
+						},
+						"description": "Obtiene un ticket específico por su ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Tickets by Ruta - Obtener Tickets por Ruta",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/tickets/ruta/5?page=1&limit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"tickets",
+								"ruta",
+								"5"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Obtiene todos los tickets asociados a una ruta específica por su ID"
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Security Testing - Pruebas de Seguridad",
 			"item": [
 				{
