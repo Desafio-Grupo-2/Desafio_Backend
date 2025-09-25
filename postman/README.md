@@ -22,6 +22,14 @@ Esta colección de Postman contiene todos los endpoints implementados en la API 
 - **Delete User - Eliminar Usuario**: Elimina un usuario (solo admin)
 - **Toggle User Status - Cambiar Estado Usuario**: Activa/desactiva usuario (solo admin)
 
+### Vehiculos - Gestión de Vehículos
+- **Get All Vehiculos - Obtener Todos los Vehículos**: Lista paginada de vehículos con filtros (solo admin)
+- **Get Vehiculo by Matricula - Obtener Vehículo por Matrícula**: Obtiene un vehículo específico
+- **Create Vehiculo - Crear Vehículo**: Crea un nuevo vehículo (solo admin)
+- **Update Vehiculo - Actualizar Vehículo**: Actualiza datos de un vehículo (solo admin)
+- **Delete Vehiculo - Eliminar Vehículo**: Elimina un vehículo (solo admin)
+- **Get Vehiculos by Usuario - Vehículos de Usuario**: Obtiene vehículos de un usuario específico
+
 ### Health Check - Verificación de Estado
 - **API Health Check**: Verifica el estado de la API
 - **Swagger Documentation**: Accede a la documentación de Swagger
@@ -74,11 +82,19 @@ npm run dev
 4. **Update User**: Actualiza datos de un usuario
 5. **Toggle User Status**: Cambia el estado de un usuario
 
-### Paso 5: Funciones Administrativas
+### Paso 5: Gestión de Vehículos
+1. **Get All Vehiculos**: Lista todos los vehículos con filtros
+2. **Create Vehiculo**: Crea un nuevo vehículo
+3. **Get Vehiculo by Matricula**: Obtiene un vehículo específico
+4. **Update Vehiculo**: Actualiza datos de un vehículo
+5. **Get Vehiculos by Usuario**: Obtiene vehículos de un usuario
+
+### Paso 6: Funciones Administrativas
 1. **Change Password**: Cambia contraseña de un usuario
 2. **Delete User**: Elimina un usuario
+3. **Delete Vehiculo**: Elimina un vehículo
 
-### Paso 6: Pruebas de Seguridad
+### Paso 7: Pruebas de Seguridad
 1. **Register New User**: Verifica hasheo automático de contraseñas
 2. **Login New User**: Verifica funcionamiento con contraseñas hasheadas
 3. **Test Password Complexity**: Verifica validación de contraseñas débiles
@@ -144,6 +160,26 @@ if (pm.response.code === 200) {
   "nombre": "Test",
   "apellido": "User",
   "role": "conductor"
+}
+```
+
+### Vehículo de Prueba
+```json
+{
+  "matricula": "TEST-001",
+  "id_usuario": 1,
+  "marca": "Toyota",
+  "modelo": "Corolla",
+  "etiqueta": "ECO",
+  "tipo": "Turismo",
+  "consumo_min": 5,
+  "consumo_max": 7,
+  "emisiones_min": 95,
+  "emisiones_max": 120,
+  "motorizacion": "Híbrido",
+  "km": 50000,
+  "kw_minimo": 85,
+  "kw_maximo": 110
 }
 ```
 
@@ -216,6 +252,8 @@ npm run dev
 ### Error 401 - Unauthorized
 - Verificar que el token esté configurado correctamente
 - Comprobar que el token no haya expirado (1 hora de duración)
+- **Solución**: Hacer un nuevo login para obtener un token fresco
+- Los tokens JWT expiran automáticamente después de 1 hora por seguridad
 
 ### Error 403 - Forbidden
 - Verificar que el usuario tenga el rol correcto

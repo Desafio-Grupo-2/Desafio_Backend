@@ -13,6 +13,7 @@ const { generalLimiter } = require('./middlewares/rateLimiter');
 // Importar rutas
 const authRoutes = require('./modules/auth/auth.routes');
 const userRoutes = require('./modules/users/user.routes');
+const vehiculoRoutes = require('./modules/vehiculos/vehiculo.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -59,6 +60,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // Rutas de la API
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/vehiculos', vehiculoRoutes);
 
 // Ruta de salud
 app.get('/health', (req, res) => {
