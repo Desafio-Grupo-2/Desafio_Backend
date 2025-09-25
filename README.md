@@ -52,6 +52,26 @@ npm start
 - `npm run dev`: Ejecuta la aplicación en modo desarrollo con nodemon
 - `npm run generate-env`: Genera archivo .env con JWT_SECRET aleatorio
 
+## Despliegue
+
+### Producción (Render)
+La aplicación está desplegada en Render: https://desafio-backend-qb7w.onrender.com/
+
+**Documentación API (Swagger):** https://desafio-backend-qb7w.onrender.com/api-docs
+
+### Variables de Entorno para Producción
+En Render, configura las siguientes variables de entorno:
+- `DB_HOST`: Host de tu base de datos PostgreSQL
+- `DB_PORT`: Puerto de la base de datos (5432)
+- `DB_NAME`: Nombre de la base de datos
+- `DB_USER`: Usuario de la base de datos
+- `DB_PASSWORD`: Contraseña de la base de datos
+- `DB_SSL`: true (para conexiones seguras)
+- `JWT_SECRET`: Clave secreta para JWT (generar una segura)
+- `JWT_EXPIRES_IN`: Tiempo de expiración del token (ej: 1h)
+- `NODE_ENV`: production
+- `CORS_ORIGIN`: URL de tu frontend (si aplica)
+
 ## Tecnologías Utilizadas
 
 - Node.js
@@ -61,3 +81,6 @@ npm start
 - JWT (autenticación)
 - bcryptjs (encriptación de contraseñas)
 - Swagger (documentación API)
+- Helmet (seguridad)
+- CORS (Cross-Origin Resource Sharing)
+- Express Rate Limit (limitación de requests)

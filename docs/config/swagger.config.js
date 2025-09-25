@@ -16,6 +16,10 @@ const swaggerConfig = {
         },
         servers: [
             {
+                url: 'https://desafio-backend-qb7w.onrender.com',
+                description: 'Servidor de producción (Render)',
+            },
+            {
                 url: `http://localhost:${process.env.PORT || 3000}`,
                 description: 'Servidor de desarrollo',
             },

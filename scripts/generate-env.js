@@ -22,9 +22,15 @@ JWT_EXPIRES_IN=1h
 PORT=3000
 NODE_ENV=development
 
+# CORS Configuration
+CORS_ORIGIN=http://localhost:5173
+
 # Rate Limiting
 RATE_LIMIT_WINDOW_MS=900000
 RATE_LIMIT_MAX_REQUESTS=100
+RATE_LIMIT_LOGIN_MAX=5
+RATE_LIMIT_REGISTER_MAX=3
+RATE_LIMIT_PASSWORD_CHANGE_MAX=3
 `;
 
 const envPath = path.join(__dirname, '..', '.env');

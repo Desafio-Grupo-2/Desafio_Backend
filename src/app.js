@@ -43,12 +43,34 @@ app.use(
 app.use(generalLimiter);
 
 // CORS
-app.use(
-    cors({
-        origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
-        credentials: true,
-    })
-);
+const corsOptions = {
+    origin: function (origin, callback) {
+        // Permitir requests sin origin (como mobile apps o curl requests)
+        if (!origin) return callback(null, true);
+        
+        // En desarrollo, permitir localhost
+        if (process.env.NODE_ENV === 'development') {
+            return callback(null, true);
+        }
+        
+        // En producción, permitir el dominio de Render y otros dominios configurados
+        const allowedOrigins = [
+            'https://desafio-backend-qb7w.onrender.com',
+            process.env.CORS_ORIGIN,
+            'http://localhost:5173',
+            'http://localhost:3000'
+        ].filter(Boolean);
+        
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+        
+        callback(new Error('No permitido por CORS'));
+    },
+    credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 // Parser de JSON
 app.use(express.json({ limit: '10mb' }));
