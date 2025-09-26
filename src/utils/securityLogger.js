@@ -4,7 +4,6 @@ const path = require('path');
 const logDir = path.join(__dirname, '../../logs');
 const securityLogFile = path.join(logDir, 'security.log');
 
-// Asegurar que el directorio de logs existe
 if (!fs.existsSync(logDir)) {
     fs.mkdirSync(logDir, { recursive: true });
 }
@@ -19,12 +18,14 @@ const logSecurityEvent = (event, details = {}) => {
             // Remover datos sensibles de los logs
             password: details.password ? '[REDACTED]' : undefined,
             token: details.token ? '[REDACTED]' : undefined,
-            email: details.email ? details.email.replace(/(.{2}).*(@.*)/, '$1***$2') : undefined,
-        }
+            email: details.email
+                ? details.email.replace(/(.{2}).*(@.*)/, '$1***$2')
+                : undefined,
+        },
     };
 
     const logLine = JSON.stringify(logEntry) + '\n';
-    
+
     try {
         fs.appendFileSync(securityLogFile, logLine);
     } catch (error) {
@@ -37,7 +38,7 @@ const logFailedLogin = (email, ip, userAgent) => {
         email,
         ip,
         userAgent,
-        severity: 'HIGH'
+        severity: 'HIGH',
     });
 };
 
@@ -46,7 +47,7 @@ const logSuccessfulLogin = (userId, email, ip) => {
         userId,
         email,
         ip,
-        severity: 'INFO'
+        severity: 'INFO',
     });
 };
 
@@ -55,7 +56,7 @@ const logRegistration = (userId, email, ip) => {
         userId,
         email,
         ip,
-        severity: 'INFO'
+        severity: 'INFO',
     });
 };
 
@@ -64,15 +65,24 @@ const logSecurityError = (error, context = {}) => {
         error: error.message,
         stack: error.stack,
         context,
-        severity: 'HIGH'
+        severity: 'HIGH',
     });
 };
 
-const logRateLimitExceeded = (ip, endpoint) => {
+const logRateLimitExceeded = (ip, endpoint, user = null, userAgent = null) => {
     logSecurityEvent('RATE_LIMIT_EXCEEDED', {
         ip,
         endpoint,
-        severity: 'MEDIUM'
+        user: user
+            ? {
+                  id: user.id || null,
+                  email: user.email
+                      ? user.email.replace(/(.{2}).*(@.*)/, '$1***$2')
+                      : null,
+              }
+            : undefined,
+        userAgent,
+        severity: 'MEDIUM',
     });
 };
 
@@ -82,5 +92,5 @@ module.exports = {
     logSuccessfulLogin,
     logRegistration,
     logSecurityError,
-    logRateLimitExceeded
+    logRateLimitExceeded,
 };

@@ -20,6 +20,8 @@ const rutaRoutes = require('./modules/rutas/ruta.routes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.set('trust proxy', 1);
+
 // Middleware de seguridad
 app.use(
     helmet({
@@ -39,32 +41,29 @@ app.use(
     })
 );
 
-// Rate limiting general
 app.use(generalLimiter);
 
 // CORS
 const corsOptions = {
     origin: function (origin, callback) {
-        // Permitir requests sin origin (como mobile apps o curl requests)
         if (!origin) return callback(null, true);
-        
-        // En desarrollo, permitir localhost
+
         if (process.env.NODE_ENV === 'development') {
             return callback(null, true);
         }
-        
+
         // En producción, permitir el dominio de Render y otros dominios configurados
         const allowedOrigins = [
             'https://desafio-backend-qb7w.onrender.com',
             process.env.CORS_ORIGIN,
             'http://localhost:5173',
-            'http://localhost:3000'
+            'http://localhost:3000',
         ].filter(Boolean);
-        
+
         if (allowedOrigins.includes(origin)) {
             return callback(null, true);
         }
-        
+
         callback(new Error('No permitido por CORS'));
     },
     credentials: true,
@@ -72,7 +71,6 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// Parser de JSON
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
@@ -88,7 +86,6 @@ app.use('/api/vehiculos', vehiculoRoutes);
 app.use('/api/tickets', ticketRoutes);
 app.use('/api/rutas', rutaRoutes);
 
-// Ruta de salud
 app.get('/health', (req, res) => {
     res.status(200).json({
         status: 'OK',
@@ -97,7 +94,6 @@ app.get('/health', (req, res) => {
     });
 });
 
-// Ruta raíz
 app.get('/', (req, res) => {
     res.json({
         message: 'API de Gestión de Usuarios - Desafío Tripulaciones',
@@ -106,10 +102,8 @@ app.get('/', (req, res) => {
     });
 });
 
-// Middleware de manejo de errores
 app.use(errorHandler);
 
-// Iniciar servidor
 const startServer = async () => {
     try {
         // Probar conexión a la base de datos
@@ -121,7 +115,7 @@ const startServer = async () => {
         app.listen(PORT, () => {
             console.log(`Servidor ejecutándose en puerto ${PORT}`);
             console.log(
-                `Documentación disponible en http://localhost:${PORT}/api-docs`
+                `Documentación disponible en https://desafio-backend-qb7w.onrender.com/api-docs`
             );
         });
     } catch (error) {
