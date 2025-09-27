@@ -32,11 +32,12 @@ const executeRealisticTicketsSeeder = async (req, res) => {
       throw new Error('No se encontraron rutas para la empresa. Verifica que existan rutas.');
     }
     
-    // Crear tickets realistas directamente
+    // Crear tickets realistas con fechas recientes (últimos 30 días)
+    const now = new Date();
     const ticketsRealistas = [
       {
         id_ruta: rutas[0].id,
-        fecha: new Date('2024-01-20T07:00:00'),
+        fecha: new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000), // 5 días atrás
         tipocarburante: 'Gasolina 95',
         precioporlitro: 150, // 1.50€/litro
         coordenadas: '43.2627,-2.9253',
@@ -52,7 +53,7 @@ const executeRealisticTicketsSeeder = async (req, res) => {
       },
       {
         id_ruta: rutas[1] ? rutas[1].id : rutas[0].id,
-        fecha: new Date('2024-01-21T08:30:00'),
+        fecha: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000), // 3 días atrás
         tipocarburante: 'Gasolina 95',
         precioporlitro: 155, // 1.55€/litro
         coordenadas: '43.2627,-2.9253',
@@ -68,7 +69,7 @@ const executeRealisticTicketsSeeder = async (req, res) => {
       },
       {
         id_ruta: rutas[2] ? rutas[2].id : rutas[0].id,
-        fecha: new Date('2024-01-22T09:15:00'),
+        fecha: new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000), // 1 día atrás
         tipocarburante: 'Gasolina 95',
         precioporlitro: 160, // 1.60€/litro
         coordenadas: '43.2627,-2.9253',

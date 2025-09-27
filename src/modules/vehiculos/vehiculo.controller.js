@@ -371,7 +371,24 @@ const getVehiculosByUsuario = async (req, res) => {
 const getVehiculosConCostesReales = async (req, res) => {
   try {
     const { id_empresa } = req.params;
-    const { total_km = 200 } = req.query; // KM por defecto
+    const { total_km = 200, periodo = '30dias' } = req.query; // KM por defecto, período por defecto
+    
+    // Calcular fecha límite según el período
+    let fechaLimite;
+    switch (periodo) {
+      case 'semestre':
+        fechaLimite = new Date(Date.now() - 6 * 30 * 24 * 60 * 60 * 1000); // 6 meses
+        break;
+      case 'anual':
+        fechaLimite = new Date(Date.now() - 12 * 30 * 24 * 60 * 60 * 1000); // 12 meses
+        break;
+      case '30dias':
+      default:
+        fechaLimite = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000); // 30 días
+        break;
+    }
+    
+    console.log(`🔍 Buscando tickets desde: ${fechaLimite.toISOString()} (período: ${periodo})`);
     
     // Obtener vehículos con sus tickets
     const vehiculos = await Vehiculo.findAll({
@@ -386,16 +403,16 @@ const getVehiculosConCostesReales = async (req, res) => {
 
     // Calcular costes reales basados en tickets
     const vehiculosConCostes = await Promise.all(vehiculos.map(async (vehiculo) => {
-      // Buscar tickets recientes para este vehículo
+      // Buscar tickets según el período seleccionado
       const tickets = await Ticket.findAll({
         where: {
           id_empresa: id_empresa,
           fecha: {
-            [Op.gte]: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) // Últimos 30 días
+            [Op.gte]: fechaLimite
           }
         },
         order: [['fecha', 'DESC']],
-        limit: 10
+        limit: 50 // Aumentar límite para períodos más largos
       });
 
       let costeReal = 0;
@@ -446,7 +463,10 @@ const getVehiculosConCostesReales = async (req, res) => {
     res.json({
       success: true,
       data: vehiculosConCostes,
-      message: 'Vehículos con costes reales calculados'
+      message: `Vehículos con costes reales calculados (período: ${periodo})`,
+      periodo: periodo,
+      fecha_limite: fechaLimite.toISOString(),
+      total_vehiculos: vehiculosConCostes.length
     });
   } catch (error) {
     console.error('Error al obtener vehículos con costes reales:', error);
