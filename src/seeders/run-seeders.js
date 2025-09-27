@@ -6,13 +6,15 @@ const usuariosSeeder = require('./02-usuarios-seeder');
 const vehiculosSeeder = require('./03-vehiculos-seeder');
 const rutasSeeder = require('./04-rutas-seeder');
 const ticketsSeeder = require('./05-tickets-seeder');
+const ticketsRealistasSeeder = require('./06-tickets-realistas-seeder');
 
 const seeders = [
     { name: 'Empresa', seeder: empresaSeeder },
     { name: 'Usuarios', seeder: usuariosSeeder },
     { name: 'Vehículos', seeder: vehiculosSeeder },
     { name: 'Rutas', seeder: rutasSeeder },
-    { name: 'Tickets', seeder: ticketsSeeder }
+    { name: 'Tickets', seeder: ticketsSeeder },
+    { name: 'Tickets Realistas', seeder: ticketsRealistasSeeder }
 ];
 
 async function runSeeders() {
@@ -42,7 +44,7 @@ async function runSeeders() {
         console.log('   5 Usuarios: Luismi Kuna (jefe) + 5 conductores Bridge');
         console.log('   6 Autobuses: 2 Gasolina + 2 Híbridos + 2 Eléctricos');
         console.log('   6 Rutas: Desde cochera BBK Kuna a Vitoria y San Sebastián');
-        console.log('   40 Tickets: Hotspots de gasolineras reales del País Vasco');
+        console.log('   50 Tickets: Hotspots de gasolineras reales del País Vasco + tickets realistas');
         console.log('');
         console.log('Credenciales de acceso:');
         console.log('   Jefe de flota: luismi.kuna / Admin123!');
