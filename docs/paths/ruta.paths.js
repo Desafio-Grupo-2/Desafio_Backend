@@ -141,7 +141,7 @@ const rutaPaths = {
                     schema: {
                         type: 'string'
                     },
-                    example: '0004 AAA'
+                    example: 'BI-1234-AB'
                 },
                 {
                     name: 'page',

@@ -117,7 +117,7 @@ const startServer = async () => {
         app.listen(PORT, () => {
             console.log(`Servidor ejecutándose en puerto ${PORT}`);
             console.log(
-                `Documentación disponible en https://desafio-backend-qb7w.onrender.com/api-docs`
+                `Documentación disponible en https://desafio-fullback.onrender.com/api-docs`
             );
         });
     } catch (error) {

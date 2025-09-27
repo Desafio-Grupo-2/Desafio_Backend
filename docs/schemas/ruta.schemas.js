@@ -10,7 +10,7 @@ const rutaSchemas = {
             matricula: {
                 type: 'string',
                 description: 'Matrícula del vehículo',
-                example: '0004 AAA'
+                example: 'BI-1234-AB'
             },
             polyline: {
                 type: 'string',
@@ -20,7 +20,7 @@ const rutaSchemas = {
             paradas: {
                 type: 'string',
                 description: 'Información de las paradas',
-                example: 'parada1,parada2,parada3'
+                example: 'BBK Kuna (Salida),Plaza Moyua,Universidad de Deusto,Colegio Salesianos Cruces'
             },
             total_km: {
                 type: 'number',
@@ -47,12 +47,12 @@ const rutaSchemas = {
             tiempos_paradas: {
                 type: 'string',
                 description: 'Tiempos de las paradas',
-                example: '5m,10m,3m'
+                example: '5m,8m,12m,18m'
             },
             kms_paradas: {
                 type: 'string',
                 description: 'Kilómetros entre paradas',
-                example: '50km,75km,25km'
+                example: '2.5km,5.2km,8.7km,12.3km'
             },
             id_empresa: {
                 type: 'integer',
@@ -126,44 +126,44 @@ const rutaSchemas = {
             total_km: {
                 type: 'number',
                 description: 'Total de kilómetros de la ruta',
-                example: 18.5
+                example: 25.5
             },
             tiempo_total: {
                 type: 'string',
                 description: 'Tiempo total de la ruta',
-                example: '35 min'
+                example: '45 min'
             },
             paradas: {
                 type: 'string',
                 description: 'Paradas en formato JSON stringificado',
-                example: '[{"nombre":"BBK Kuna (Salida)","hora":"07:30","km":0},{"nombre":"Plaza Moyua, Bilbao","hora":"07:35","km":2.5}]'
+                example: '[{"nombre":"BBK Kuna (Salida)","hora":"08:00","km":0},{"nombre":"Plaza Circular, Bilbao","hora":"08:15","km":5.2},{"nombre":"Universidad de Deusto","hora":"08:30","km":12.8},{"nombre":"Colegio Salesianos, Cruces","hora":"08:45","km":25.5}]'
             },
             tiempos_paradas: {
                 type: 'string',
                 description: 'Tiempos de paradas en formato JSON stringificado',
-                example: '[5,8,12,18,35]'
+                example: '[15,30,45]'
             },
             kms_paradas: {
                 type: 'string',
                 description: 'Kilómetros entre paradas en formato JSON stringificado',
-                example: '[2.5,5.2,8.7,12.3,18.5]'
+                example: '[5.2,12.8,25.5]'
             },
             fecha_inicio: {
                 type: 'string',
                 format: 'date-time',
                 description: 'Fecha de inicio de la ruta (opcional, se genera automáticamente si no se proporciona)',
-                example: '2024-01-20T07:30:00.000Z'
+                example: '2024-01-20T08:00:00.000Z'
             },
             fecha_fin: {
                 type: 'string',
                 format: 'date-time',
                 description: 'Fecha de fin de la ruta (opcional, se calcula automáticamente si no se proporciona)',
-                example: '2024-01-20T08:30:00.000Z'
+                example: '2024-01-20T08:45:00.000Z'
             },
             polyline: {
                 type: 'string',
                 description: 'Polilínea de la ruta (opcional, se genera automáticamente si no se proporciona)',
-                example: 'encoded_polyline_bbk_kuna_salesianos_cruces'
+                example: 'encoded_polyline_BI-1234-AB_1758970988867'
             }
         }
     },
@@ -183,44 +183,44 @@ const rutaSchemas = {
             total_km: {
                 type: 'number',
                 description: 'Total de kilómetros de la ruta',
-                example: 18.5
+                example: 25.5
             },
             tiempo_total: {
                 type: 'string',
                 description: 'Tiempo total de la ruta',
-                example: '35 min'
+                example: '45 min'
             },
             paradas: {
                 type: 'string',
                 description: 'Paradas en formato JSON stringificado',
-                example: '[{"nombre":"BBK Kuna (Salida)","hora":"07:30","km":0},{"nombre":"Plaza Moyua, Bilbao","hora":"07:35","km":2.5}]'
+                example: '[{"nombre":"BBK Kuna (Salida)","hora":"08:00","km":0},{"nombre":"Plaza Circular, Bilbao","hora":"08:15","km":5.2},{"nombre":"Universidad de Deusto","hora":"08:30","km":12.8},{"nombre":"Colegio Salesianos, Cruces","hora":"08:45","km":25.5}]'
             },
             tiempos_paradas: {
                 type: 'string',
                 description: 'Tiempos de paradas en formato JSON stringificado',
-                example: '[5,8,12,18,35]'
+                example: '[15,30,45]'
             },
             kms_paradas: {
                 type: 'string',
                 description: 'Kilómetros entre paradas en formato JSON stringificado',
-                example: '[2.5,5.2,8.7,12.3,18.5]'
+                example: '[5.2,12.8,25.5]'
             },
             fecha_inicio: {
                 type: 'string',
                 format: 'date-time',
                 description: 'Fecha de inicio de la ruta',
-                example: '2024-01-20T07:30:00.000Z'
+                example: '2024-01-20T08:00:00.000Z'
             },
             fecha_fin: {
                 type: 'string',
                 format: 'date-time',
                 description: 'Fecha de fin de la ruta',
-                example: '2024-01-20T08:30:00.000Z'
+                example: '2024-01-20T08:45:00.000Z'
             },
             polyline: {
                 type: 'string',
                 description: 'Polilínea de la ruta',
-                example: 'encoded_polyline_bbk_kuna_salesianos_cruces'
+                example: 'encoded_polyline_BI-1234-AB_1758970988867'
             }
         }
     }

@@ -11,7 +11,7 @@
  *         nombre:
  *           type: string
  *           description: Nombre de la empresa
- *           example: "Empresa Ejemplo S.L."
+ *           example: "San Millán Bus"
  *         cif:
  *           type: string
  *           description: CIF de la empresa
@@ -80,7 +80,7 @@
  *           minLength: 2
  *           maxLength: 100
  *           description: Nombre de la empresa
- *           example: "Empresa Ejemplo S.L."
+ *           example: "San Millán Bus"
  *         cif:
  *           type: string
  *           pattern: "^[A-Z][0-9]{8}$"

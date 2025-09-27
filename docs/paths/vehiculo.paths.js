@@ -76,7 +76,7 @@
  *           schema:
  *             $ref: '#/components/schemas/VehiculoCreateRequest'
  *           example:
- *             matricula: "1234-ABC"
+ *             matricula: "BI-1234-AB"
  *             id_usuario: 1
  *             marca: "Toyota"
  *             modelo: "Corolla"
@@ -136,7 +136,7 @@
  *         schema:
  *           type: string
  *         description: Matrícula del vehículo
- *         example: "1234-ABC"
+ *         example: "BI-1234-AB"
  *     responses:
  *       200:
  *         description: Vehículo obtenido exitosamente
@@ -168,7 +168,7 @@
  *         schema:
  *           type: string
  *         description: Matrícula del vehículo
- *         example: "1234-ABC"
+ *         example: "BI-1234-AB"
  *     requestBody:
  *       required: true
  *       content:
@@ -176,8 +176,8 @@
  *           schema:
  *             $ref: '#/components/schemas/VehiculoUpdateRequest'
  *           example:
- *             marca: "Toyota"
- *             modelo: "Corolla Hybrid"
+ *             marca: "Mercedes-Benz"
+ *             modelo: "Sprinter"
  *             etiqueta: "ECO"
  *             km: 55000
  *     responses:
@@ -217,7 +217,7 @@
  *         schema:
  *           type: string
  *         description: Matrícula del vehículo
- *         example: "1234-ABC"
+ *         example: "BI-1234-AB"
  *     responses:
  *       200:
  *         description: Vehículo eliminado exitosamente
