@@ -7,7 +7,8 @@
         "dev": "nodemon src/app.js",
         "generate-env": "node scripts/generate-env.js",
         "seed": "node src/seeders/run-seeders.js",
-        "seed:rollback": "node src/seeders/run-seeders.js rollback"
+        "seed:rollback": "node src/seeders/run-seeders.js rollback",
+        "init-render": "node scripts/init-render.js"
     },
     "repository": {
         "type": "git",
