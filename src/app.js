@@ -121,7 +121,10 @@ const startServer = async () => {
             );
         });
     } catch (error) {
-        console.error('Error al iniciar el servidor:', error.message);
+        console.error('Error al iniciar el servidor:');
+        console.error('Mensaje:', error.message);
+        console.error('Código:', error.code);
+        console.error('Detalles:', error);
         process.exit(1);
     }
 };

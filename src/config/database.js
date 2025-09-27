@@ -26,7 +26,10 @@ const testConnection = async () => {
         console.log('Conexión a la base de datos establecida correctamente');
         return true;
     } catch (error) {
-        console.error('Error al conectar con la base de datos:', error.message);
+        console.error('Error al conectar con la base de datos:');
+        console.error('Mensaje:', error.message);
+        console.error('Código:', error.code);
+        console.error('Detalles:', error);
         throw error;
     }
 };
