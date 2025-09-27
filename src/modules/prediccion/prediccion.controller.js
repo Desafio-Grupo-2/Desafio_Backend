@@ -4,6 +4,7 @@ const PREDICTION_API_URL = 'https://desafio-reto2.onrender.com';
 
 const predictBatch = async (req, res) => {
   try {
+    console.log('🔍 PredictBatch llamado con:', req.body);
     const { data } = req.body;
 
     if (!data || !Array.isArray(data)) {
