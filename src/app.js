@@ -18,6 +18,7 @@ const ticketRoutes = require('./modules/tickets/ticket.routes');
 const rutaRoutes = require('./modules/rutas/ruta.routes');
 const empresaRoutes = require('./modules/empresas/empresa.routes');
 const prediccionRoutes = require('./modules/prediccion/prediccion.routes');
+const seederRoutes = require('./modules/seeders/seeder.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -89,6 +90,7 @@ app.use('/api/tickets', ticketRoutes);
 app.use('/api/rutas', rutaRoutes);
 app.use('/api/empresas', empresaRoutes);
 app.use('/api/prediccion', prediccionRoutes);
+app.use('/api/seeders', seederRoutes);
 
 app.get('/health', (req, res) => {
     res.status(200).json({
