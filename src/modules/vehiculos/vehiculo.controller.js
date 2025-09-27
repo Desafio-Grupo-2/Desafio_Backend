@@ -420,7 +420,10 @@ const getVehiculosConCostesReales = async (req, res) => {
           // Calcular coste para los KM solicitados
           const kmPorRepostaje = 400; // KM promedio entre repostajes
           const repostajesNecesarios = total_km / kmPorRepostaje;
-          costeReal = (totalImporte / tickets.length) * repostajesNecesarios;
+          
+          // Convertir de céntimos a euros y calcular coste real
+          const importePromedioEuros = (totalImporte / tickets.length) / 100;
+          costeReal = importePromedioEuros * repostajesNecesarios;
         }
       }
 
