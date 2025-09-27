@@ -8,6 +8,7 @@ const {
     deleteVehiculo,
     getVehiculosByUsuario,
     getVehiculosByEmpresa,
+    getVehiculosConCostesReales,
 } = require('./vehiculo.controller');
 const {
     authenticateToken,
@@ -80,6 +81,14 @@ router.get(
     requireAdmin,
     getVehiculosValidation,
     getVehiculosByEmpresa
+);
+
+// Nueva ruta para obtener vehículos con costes reales basados en tickets
+router.get(
+    '/empresa/:id_empresa/costes-reales',
+    authenticateToken,
+    requireAdmin,
+    getVehiculosConCostesReales
 );
 
 module.exports = router;

@@ -1,4 +1,4 @@
-const { Vehiculo, Usuario, Empresa } = require('../../models');
+const { Vehiculo, Usuario, Empresa, Ticket } = require('../../models');
 const { Op } = require('sequelize');
 const { logSecurityError } = require('../../utils/securityLogger');
 
@@ -368,6 +368,93 @@ const getVehiculosByUsuario = async (req, res) => {
     }
 };
 
+const getVehiculosConCostesReales = async (req, res) => {
+  try {
+    const { id_empresa } = req.params;
+    const { total_km = 200 } = req.query; // KM por defecto
+    
+    // Obtener vehículos con sus tickets
+    const vehiculos = await Vehiculo.findAll({
+      where: { id_empresa },
+      include: [
+        {
+          model: Empresa,
+          as: 'empresa'
+        }
+      ]
+    });
+
+    // Calcular costes reales basados en tickets
+    const vehiculosConCostes = await Promise.all(vehiculos.map(async (vehiculo) => {
+      // Buscar tickets recientes para este vehículo
+      const tickets = await Ticket.findAll({
+        where: {
+          id_empresa: id_empresa,
+          fecha: {
+            [Op.gte]: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) // Últimos 30 días
+          }
+        },
+        order: [['fecha', 'DESC']],
+        limit: 10
+      });
+
+      let costeReal = 0;
+      let consumoReal = 0;
+      let precioPromedio = 0;
+      
+      if (tickets.length > 0) {
+        // Calcular promedios reales
+        const totalImporte = tickets.reduce((sum, ticket) => 
+          sum + (ticket.importebus_euros || 0), 0);
+        const totalLitros = tickets.reduce((sum, ticket) => 
+          sum + (ticket.litrosbus || 0), 0);
+        const precios = tickets
+          .filter(ticket => ticket.precioporlitro > 0)
+          .map(ticket => ticket.precioporlitro);
+        
+        if (totalLitros > 0) {
+          consumoReal = totalLitros / tickets.length; // Litros por repostaje promedio
+          precioPromedio = precios.length > 0 ? 
+            precios.reduce((sum, precio) => sum + precio, 0) / precios.length : 0;
+          
+          // Calcular coste para los KM solicitados
+          const kmPorRepostaje = 400; // KM promedio entre repostajes
+          const repostajesNecesarios = total_km / kmPorRepostaje;
+          costeReal = (totalImporte / tickets.length) * repostajesNecesarios;
+        }
+      }
+
+      // Si no hay datos reales, usar datos del vehículo
+      if (costeReal === 0) {
+        const consumoMedio = (vehiculo.consumo_min + vehiculo.consumo_max) / 2;
+        const precio = vehiculo.motorizacion === 'Eléctrico' ? 0.25 : 1.5;
+        costeReal = (total_km / 100) * consumoMedio * precio;
+      }
+
+      return {
+        ...vehiculo.toJSON(),
+        coste_real: Math.round(costeReal * 100) / 100,
+        consumo_real: Math.round(consumoReal * 100) / 100,
+        precio_promedio: Math.round(precioPromedio * 100) / 100,
+        tickets_count: tickets.length
+      };
+    }));
+
+    res.json({
+      success: true,
+      data: vehiculosConCostes,
+      message: 'Vehículos con costes reales calculados'
+    });
+  } catch (error) {
+    console.error('Error al obtener vehículos con costes reales:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor',
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
     getAllVehiculos,
     getVehiculoByMatricula,
@@ -376,4 +463,5 @@ module.exports = {
     deleteVehiculo,
     getVehiculosByUsuario,
     getVehiculosByEmpresa,
+    getVehiculosConCostesReales,
 };
