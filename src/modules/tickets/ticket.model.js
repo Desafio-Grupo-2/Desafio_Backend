@@ -66,6 +66,14 @@ const Ticket = sequelize.define(
             allowNull: true,
             field: 'Precio por Litro',
         },
+        id_empresa: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            references: {
+                model: 'empresa',
+                key: 'id_empresa',
+            },
+        },
     },
     {
         tableName: 'ticket',

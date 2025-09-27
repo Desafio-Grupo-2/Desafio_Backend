@@ -5,7 +5,9 @@
     "scripts": {
         "start": "node src/app.js",
         "dev": "nodemon src/app.js",
-        "generate-env": "node scripts/generate-env.js"
+        "generate-env": "node scripts/generate-env.js",
+        "seed": "node src/seeders/run-seeders.js",
+        "seed:rollback": "node src/seeders/run-seeders.js rollback"
     },
     "repository": {
         "type": "git",

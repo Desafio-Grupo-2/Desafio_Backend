@@ -16,6 +16,7 @@ const userRoutes = require('./modules/users/user.routes');
 const vehiculoRoutes = require('./modules/vehiculos/vehiculo.routes');
 const ticketRoutes = require('./modules/tickets/ticket.routes');
 const rutaRoutes = require('./modules/rutas/ruta.routes');
+const empresaRoutes = require('./modules/empresas/empresa.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -85,6 +86,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/vehiculos', vehiculoRoutes);
 app.use('/api/tickets', ticketRoutes);
 app.use('/api/rutas', rutaRoutes);
+app.use('/api/empresas', empresaRoutes);
 
 app.get('/health', (req, res) => {
     res.status(200).json({

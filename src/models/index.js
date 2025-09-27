@@ -8,8 +8,23 @@ const Ruta = require('../modules/rutas/ruta.model');
 const Ticket = require('../modules/tickets/ticket.model');
 const EstacionServicio = require('../modules/estaciones_servicio/estacion_servicio.model');
 const TipoCombustible = require('../modules/tipos_combustible/tipo_combustible.model');
+const Empresa = require('../modules/empresas/empresa.model');
 
 // Definir relaciones
+// Relaciones con Empresa (1:N)
+Empresa.hasMany(Usuario, { foreignKey: 'id_empresa', as: 'usuarios' });
+Usuario.belongsTo(Empresa, { foreignKey: 'id_empresa', as: 'empresa' });
+
+Empresa.hasMany(Vehiculo, { foreignKey: 'id_empresa', as: 'vehiculos' });
+Vehiculo.belongsTo(Empresa, { foreignKey: 'id_empresa', as: 'empresa' });
+
+Empresa.hasMany(Ruta, { foreignKey: 'id_empresa', as: 'rutas' });
+Ruta.belongsTo(Empresa, { foreignKey: 'id_empresa', as: 'empresa' });
+
+Empresa.hasMany(Ticket, { foreignKey: 'id_empresa', as: 'tickets' });
+Ticket.belongsTo(Empresa, { foreignKey: 'id_empresa', as: 'empresa' });
+
+// Relaciones existentes
 Usuario.hasMany(Vehiculo, { foreignKey: 'id_usuario', as: 'vehiculos' });
 Vehiculo.belongsTo(Usuario, { foreignKey: 'id_usuario', as: 'usuario' });
 
@@ -45,5 +60,6 @@ module.exports = {
     Ticket,
     EstacionServicio,
     TipoCombustible,
+    Empresa,
     loadModels,
 };

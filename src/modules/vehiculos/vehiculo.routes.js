@@ -7,6 +7,7 @@ const {
     updateVehiculo,
     deleteVehiculo,
     getVehiculosByUsuario,
+    getVehiculosByEmpresa,
 } = require('./vehiculo.controller');
 const {
     authenticateToken,
@@ -70,6 +71,15 @@ router.get(
     requireAdminOrConductor,
     userIdValidation,
     getVehiculosByUsuario
+);
+
+// Nueva ruta para obtener vehículos por empresa
+router.get(
+    '/empresa/:empresaId',
+    authenticateToken,
+    requireAdmin,
+    getVehiculosValidation,
+    getVehiculosByEmpresa
 );
 
 module.exports = router;

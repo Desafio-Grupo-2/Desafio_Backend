@@ -43,6 +43,14 @@ const Usuario = sequelize.define(
             type: DataTypes.BOOLEAN,
             defaultValue: true,
         },
+        id_empresa: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            references: {
+                model: 'empresa',
+                key: 'id_empresa',
+            },
+        },
     },
     {
         tableName: 'usuario',

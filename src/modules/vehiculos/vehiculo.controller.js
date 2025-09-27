@@ -1,4 +1,4 @@
-const { Vehiculo, Usuario } = require('../../models');
+const { Vehiculo, Usuario, Empresa } = require('../../models');
 const { Op } = require('sequelize');
 const { logSecurityError } = require('../../utils/securityLogger');
 
@@ -28,6 +28,11 @@ const getAllVehiculos = async (req, res) => {
                     model: Usuario,
                     as: 'usuario',
                     attributes: ['id_usuario', 'username', 'nombre', 'apellido', 'email'],
+                },
+                {
+                    model: Empresa,
+                    as: 'empresa',
+                    attributes: ['id_empresa', 'nombre', 'cif'],
                 },
             ],
             limit: parseInt(limit),
@@ -253,6 +258,65 @@ const deleteVehiculo = async (req, res) => {
     }
 };
 
+// Obtener vehículos por empresa
+const getVehiculosByEmpresa = async (req, res) => {
+    try {
+        const { empresaId } = req.params;
+        const { page = 1, limit = 10, search, marca, tipo } = req.query;
+        const offset = (page - 1) * limit;
+
+        const whereClause = { id_empresa: empresaId };
+
+        if (search) {
+            whereClause[Op.or] = [
+                { matricula: { [Op.iLike]: `%${search}%` } },
+                { marca: { [Op.iLike]: `%${search}%` } },
+                { modelo: { [Op.iLike]: `%${search}%` } },
+            ];
+        }
+        if (marca) whereClause.marca = { [Op.iLike]: `%${marca}%` };
+        if (tipo) whereClause.tipo = { [Op.iLike]: `%${tipo}%` };
+
+        const { count, rows: vehiculos } = await Vehiculo.findAndCountAll({
+            where: whereClause,
+            include: [
+                {
+                    model: Usuario,
+                    as: 'usuario',
+                    attributes: ['id_usuario', 'username', 'nombre', 'apellido', 'email'],
+                },
+                {
+                    model: Empresa,
+                    as: 'empresa',
+                    attributes: ['id_empresa', 'nombre', 'cif'],
+                },
+            ],
+            limit: parseInt(limit),
+            offset: parseInt(offset),
+            order: [['matricula', 'ASC']],
+        });
+
+        const totalPages = Math.ceil(count / limit);
+
+        res.json({
+            success: true,
+            data: vehiculos,
+            pagination: {
+                total: count,
+                page: parseInt(page),
+                limit: parseInt(limit),
+                pages: totalPages,
+            },
+        });
+    } catch (error) {
+        logSecurityError(error, { action: 'getVehiculosByEmpresa', userId: req.user?.userId, empresaId: req.params.empresaId });
+        res.status(500).json({
+            success: false,
+            message: 'Error al obtener vehículos de la empresa',
+        });
+    }
+};
+
 // Obtener vehículos de un usuario específico
 const getVehiculosByUsuario = async (req, res) => {
     try {
@@ -311,4 +375,5 @@ module.exports = {
     updateVehiculo,
     deleteVehiculo,
     getVehiculosByUsuario,
+    getVehiculosByEmpresa,
 };

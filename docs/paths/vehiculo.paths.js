@@ -284,3 +284,65 @@
  *       404:
  *         description: Usuario no encontrado
  */
+
+/**
+ * @swagger
+ * /api/vehiculos/empresa/{empresaId}:
+ *   get:
+ *     tags: [Vehiculos]
+ *     summary: Obtener vehículos por empresa (Solo administradores)
+ *     description: |
+ *       Obtiene todos los vehículos de una empresa específica.
+ *       **Permisos**: Solo administradores pueden acceder.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: empresaId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de la empresa
+ *         example: 1
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Número de página
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 10
+ *         description: Número de vehículos por página
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Buscar por matrícula, marca o modelo
+ *       - in: query
+ *         name: marca
+ *         schema:
+ *           type: string
+ *         description: Filtrar por marca
+ *       - in: query
+ *         name: tipo
+ *         schema:
+ *           type: string
+ *         description: Filtrar por tipo de vehículo
+ *     responses:
+ *       200:
+ *         description: Vehículos de la empresa obtenidos exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/VehiculoListResponse'
+ *       403:
+ *         description: Acceso denegado - Solo administradores
+ *       404:
+ *         description: Empresa no encontrada
+ */

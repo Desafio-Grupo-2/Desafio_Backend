@@ -46,6 +46,9 @@
  *           enum: [conductor, administrador]
  *         active:
  *           type: boolean
+ *         id_empresa:
+ *           type: integer
+ *           description: ID de la empresa a la que pertenece el usuario
  *     
  *     ErrorResponse:
  *       type: object
