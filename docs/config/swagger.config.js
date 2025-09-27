@@ -16,7 +16,7 @@ const swaggerConfig = {
         },
         servers: [
             {
-                url: 'https://desafio-backend-qb7w.onrender.com',
+                url: 'https://desafio-fullback.onrender.com',
                 description: 'Servidor de producción (Render)',
             },
             {
