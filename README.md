@@ -55,9 +55,9 @@ npm start
 ## Despliegue
 
 ### Producción (Render)
-La aplicación está desplegada en Render: https://desafio-backend-qb7w.onrender.com/
+La aplicación está desplegada en Render: https://desafio-fullback.onrender.com
 
-**Documentación API (Swagger):** https://desafio-backend-qb7w.onrender.com/api-docs
+**Documentación API (Swagger):** https://desafio-fullback.onrender.com/api-docs
 
 ### Variables de Entorno para Producción
 En Render, configura las siguientes variables de entorno:
