@@ -16,6 +16,7 @@ const userRoutes = require('./modules/users/user.routes');
 const vehiculoRoutes = require('./modules/vehiculos/vehiculo.routes');
 const ticketRoutes = require('./modules/tickets/ticket.routes');
 const rutaRoutes = require('./modules/rutas/ruta.routes');
+const empresaRoutes = require('./modules/empresas/empresa.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -85,6 +86,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/vehiculos', vehiculoRoutes);
 app.use('/api/tickets', ticketRoutes);
 app.use('/api/rutas', rutaRoutes);
+app.use('/api/empresas', empresaRoutes);
 
 app.get('/health', (req, res) => {
     res.status(200).json({
@@ -115,11 +117,14 @@ const startServer = async () => {
         app.listen(PORT, () => {
             console.log(`Servidor ejecutándose en puerto ${PORT}`);
             console.log(
-                `Documentación disponible en https://desafio-backend-qb7w.onrender.com/api-docs`
+                `Documentación disponible en https://desafio-fullback.onrender.com/api-docs`
             );
         });
     } catch (error) {
-        console.error('Error al iniciar el servidor:', error.message);
+        console.error('Error al iniciar el servidor:');
+        console.error('Mensaje:', error.message);
+        console.error('Código:', error.code);
+        console.error('Detalles:', error);
         process.exit(1);
     }
 };

@@ -1,4 +1,4 @@
-const { Usuario } = require('../../models');
+const { Usuario, Empresa } = require('../../models');
 const { Op } = require('sequelize');
 const { logSecurityError } = require('../../utils/securityLogger');
 
@@ -37,6 +37,11 @@ const getAllUsers = async (req, res) => {
             limit: maxLimit,
             offset: parseInt(offset),
             attributes: { exclude: ['password'] },
+            include: [{
+                model: Empresa,
+                as: 'empresa',
+                attributes: ['id_empresa', 'nombre', 'cif']
+            }],
             order: [['id_usuario', 'DESC']],
         });
 
@@ -76,6 +81,11 @@ const getUserById = async (req, res) => {
 
         const user = await Usuario.findByPk(id, {
             attributes: { exclude: ['password'] },
+            include: [{
+                model: Empresa,
+                as: 'empresa',
+                attributes: ['id_empresa', 'nombre', 'cif', 'direccion', 'telefono', 'email']
+            }],
         });
 
         if (!user) {
@@ -246,6 +256,59 @@ const deleteUser = async (req, res) => {
     }
 };
 
+// Obtener usuarios por empresa
+const getUsersByEmpresa = async (req, res) => {
+    try {
+        const { empresaId } = req.params;
+        const { page = 1, limit = 10, role, search, active } = req.query;
+        const offset = (page - 1) * limit;
+        const maxLimit = Math.min(parseInt(limit) || 10, 100);
+
+        const whereClause = { id_empresa: empresaId };
+
+        if (role) whereClause.role = role;
+        if (active !== undefined) whereClause.active = active === 'true';
+        if (search) {
+            whereClause[Op.or] = [
+                { email: { [Op.iLike]: `%${search}%` } },
+                { username: { [Op.iLike]: `%${search}%` } },
+                { nombre: { [Op.iLike]: `%${search}%` } },
+                { apellido: { [Op.iLike]: `%${search}%` } },
+            ];
+        }
+
+        const { count, rows: users } = await Usuario.findAndCountAll({
+            where: whereClause,
+            limit: maxLimit,
+            offset: parseInt(offset),
+            attributes: { exclude: ['password'] },
+            include: [{
+                model: Empresa,
+                as: 'empresa',
+                attributes: ['id_empresa', 'nombre', 'cif']
+            }],
+            order: [['id_usuario', 'DESC']],
+        });
+
+        res.json({
+            success: true,
+            data: users,
+            pagination: {
+                total: count,
+                page: parseInt(page),
+                limit: maxLimit,
+                pages: Math.ceil(count / maxLimit),
+            },
+        });
+    } catch (error) {
+        logSecurityError(error, { action: 'getUsersByEmpresa', userId: req.user?.userId, empresaId: req.params.empresaId });
+        res.status(500).json({
+            success: false,
+            message: 'Error al obtener usuarios de la empresa',
+        });
+    }
+};
+
 // Activar/desactivar usuario (solo admin)
 const toggleUserStatus = async (req, res) => {
     try {
@@ -301,4 +364,5 @@ module.exports = {
     updateUser,
     deleteUser,
     toggleUserStatus,
+    getUsersByEmpresa,
 };

@@ -1,4 +1,4 @@
-# Desafío de Tripulaciones - Backend
+# Desafío de Tripulaciones Grupo 2 - Backend
 
 API REST para gestión de usuarios, vehículos, rutas, tickets y estaciones de servicio.
 

@@ -141,7 +141,7 @@ const rutaPaths = {
                     schema: {
                         type: 'string'
                     },
-                    example: '0004 AAA'
+                    example: 'BI-1234-AB'
                 },
                 {
                     name: 'page',
@@ -180,6 +180,218 @@ const rutaPaths = {
                 },
                 401: {
                     description: 'Token de autenticación inválido o expirado',
+                    content: {
+                        'application/json': {
+                            schema: {
+                                $ref: '#/components/schemas/ErrorResponse'
+                            }
+                        }
+                    }
+                },
+                500: {
+                    description: 'Error interno del servidor',
+                    content: {
+                        'application/json': {
+                            schema: {
+                                $ref: '#/components/schemas/ErrorResponse'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    '/api/rutas': {
+        post: {
+            tags: ['Rutas'],
+            summary: 'Crear nueva ruta',
+            description: 'Crea una nueva ruta con datos estructurados (paradas, tiempos, kms en formato JSON)',
+            security: [{ bearerAuth: [] }],
+            requestBody: {
+                required: true,
+                content: {
+                    'application/json': {
+                        schema: {
+                            $ref: '#/components/schemas/RutaCreateRequest'
+                        }
+                    }
+                }
+            },
+            responses: {
+                201: {
+                    description: 'Ruta creada exitosamente',
+                    content: {
+                        'application/json': {
+                            schema: {
+                                $ref: '#/components/schemas/RutaResponse'
+                            }
+                        }
+                    }
+                },
+                400: {
+                    description: 'Datos de entrada inválidos',
+                    content: {
+                        'application/json': {
+                            schema: {
+                                $ref: '#/components/schemas/ErrorResponse'
+                            }
+                        }
+                    }
+                },
+                401: {
+                    description: 'Token de autenticación inválido o expirado',
+                    content: {
+                        'application/json': {
+                            schema: {
+                                $ref: '#/components/schemas/ErrorResponse'
+                            }
+                        }
+                    }
+                },
+                500: {
+                    description: 'Error interno del servidor',
+                    content: {
+                        'application/json': {
+                            schema: {
+                                $ref: '#/components/schemas/ErrorResponse'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    '/api/rutas/{id}': {
+        put: {
+            tags: ['Rutas'],
+            summary: 'Actualizar ruta',
+            description: 'Actualiza una ruta existente por su ID',
+            security: [{ bearerAuth: [] }],
+            parameters: [
+                {
+                    name: 'id',
+                    in: 'path',
+                    description: 'ID de la ruta',
+                    required: true,
+                    schema: {
+                        type: 'integer',
+                        minimum: 1
+                    }
+                }
+            ],
+            requestBody: {
+                required: true,
+                content: {
+                    'application/json': {
+                        schema: {
+                            $ref: '#/components/schemas/RutaUpdateRequest'
+                        }
+                    }
+                }
+            },
+            responses: {
+                200: {
+                    description: 'Ruta actualizada exitosamente',
+                    content: {
+                        'application/json': {
+                            schema: {
+                                $ref: '#/components/schemas/RutaResponse'
+                            }
+                        }
+                    }
+                },
+                400: {
+                    description: 'Datos de entrada inválidos',
+                    content: {
+                        'application/json': {
+                            schema: {
+                                $ref: '#/components/schemas/ErrorResponse'
+                            }
+                        }
+                    }
+                },
+                401: {
+                    description: 'Token de autenticación inválido o expirado',
+                    content: {
+                        'application/json': {
+                            schema: {
+                                $ref: '#/components/schemas/ErrorResponse'
+                            }
+                        }
+                    }
+                },
+                404: {
+                    description: 'Ruta no encontrada',
+                    content: {
+                        'application/json': {
+                            schema: {
+                                $ref: '#/components/schemas/ErrorResponse'
+                            }
+                        }
+                    }
+                },
+                500: {
+                    description: 'Error interno del servidor',
+                    content: {
+                        'application/json': {
+                            schema: {
+                                $ref: '#/components/schemas/ErrorResponse'
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        delete: {
+            tags: ['Rutas'],
+            summary: 'Eliminar ruta',
+            description: 'Elimina una ruta existente por su ID',
+            security: [{ bearerAuth: [] }],
+            parameters: [
+                {
+                    name: 'id',
+                    in: 'path',
+                    description: 'ID de la ruta',
+                    required: true,
+                    schema: {
+                        type: 'integer',
+                        minimum: 1
+                    }
+                }
+            ],
+            responses: {
+                200: {
+                    description: 'Ruta eliminada exitosamente',
+                    content: {
+                        'application/json': {
+                            schema: {
+                                type: 'object',
+                                properties: {
+                                    success: {
+                                        type: 'boolean',
+                                        example: true
+                                    },
+                                    message: {
+                                        type: 'string',
+                                        example: 'Ruta eliminada exitosamente'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                401: {
+                    description: 'Token de autenticación inválido o expirado',
+                    content: {
+                        'application/json': {
+                            schema: {
+                                $ref: '#/components/schemas/ErrorResponse'
+                            }
+                        }
+                    }
+                },
+                404: {
+                    description: 'Ruta no encontrada',
                     content: {
                         'application/json': {
                             schema: {

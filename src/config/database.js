@@ -1,6 +1,11 @@
 require('dotenv').config();
 const { Sequelize } = require('sequelize');
 
+const sslOptions =
+    process.env.DB_SSL === 'true'
+        ? { ssl: { require: true, rejectUnauthorized: false } }
+        : {};
+
 const sequelize = new Sequelize(
     process.env.DB_NAME,
     process.env.DB_USER,
@@ -9,12 +14,7 @@ const sequelize = new Sequelize(
         host: process.env.DB_HOST,
         port: process.env.DB_PORT,
         dialect: 'postgres',
-        dialectOptions: {
-            ssl: {
-                require: true,
-                rejectUnauthorized: false,
-            },
-        },
+        dialectOptions: sslOptions,
         logging: false,
     }
 );
@@ -26,7 +26,10 @@ const testConnection = async () => {
         console.log('Conexión a la base de datos establecida correctamente');
         return true;
     } catch (error) {
-        console.error('Error al conectar con la base de datos:', error.message);
+        console.error('Error al conectar con la base de datos:');
+        console.error('Mensaje:', error.message);
+        console.error('Código:', error.code);
+        console.error('Detalles:', error);
         throw error;
     }
 };

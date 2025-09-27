@@ -22,11 +22,11 @@
  *           schema:
  *             $ref: '#/components/schemas/RegisterRequest'
  *           example:
- *             username: "conductor01"
- *             email: "conductor@example.com"
- *             password: "Password123"
- *             nombre: "Juan"
- *             apellido: "Pérez"
+ *             username: "arantza.bridge"
+ *             email: "arantza.bridge@sanmillanbus.com"
+ *             password: "Conductor123!"
+ *             nombre: "Arantza"
+ *             apellido: "Bridge"
  *             role: "conductor"
  *     responses:
  *       201:
@@ -65,8 +65,8 @@
  *           schema:
  *             $ref: '#/components/schemas/LoginRequest'
  *           example:
- *             email: "sergionunez@deivibus.com"
- *             password: "Sergio01N"
+ *             email: "luismi.kuna@sanmillanbus.com"
+ *             password: "Admin123!"
  *     responses:
  *       200:
  *         description: Login exitoso

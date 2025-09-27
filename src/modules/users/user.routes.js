@@ -7,6 +7,7 @@ const {
     updateUser,
     deleteUser,
     toggleUserStatus,
+    getUsersByEmpresa,
 } = require('./user.controller');
 const {
     authenticateToken,
@@ -63,6 +64,15 @@ router.post(
     requireAdmin,
     userIdValidation,
     toggleUserStatus
+);
+
+// Nueva ruta para obtener usuarios por empresa
+router.get(
+    '/empresa/:empresaId',
+    authenticateToken,
+    requireAdmin,
+    getUsersValidation,
+    getUsersByEmpresa
 );
 
 module.exports = router;

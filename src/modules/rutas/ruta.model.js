@@ -26,7 +26,7 @@ const Ruta = sequelize.define(
             allowNull: true,
         },
         total_km: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.DECIMAL(10, 2),
             allowNull: true,
         },
         fecha_inicio: {
@@ -48,6 +48,14 @@ const Ruta = sequelize.define(
         kms_paradas: {
             type: DataTypes.TEXT,
             allowNull: true,
+        },
+        id_empresa: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            references: {
+                model: 'empresa',
+                key: 'id_empresa',
+            },
         },
     },
     {

@@ -431,6 +431,54 @@
 						"description": "Activa/desactiva un usuario (solo administradores)"
 					},
 					"response": []
+				},
+				{
+					"name": "Get Users by Empresa - Obtener Usuarios por Empresa",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/empresa/1?page=1&limit=10&role=conductor&search=Juan&active=true",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"empresa",
+								"1"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "role",
+									"value": "conductor"
+								},
+								{
+									"key": "search",
+									"value": "Juan"
+								},
+								{
+									"key": "active",
+									"value": "true"
+								}
+							]
+						},
+						"description": "Obtiene usuarios de una empresa específica (solo administradores)"
+					},
+					"response": []
 				}
 			],
 			"description": "Endpoints para gestión de usuarios"
@@ -634,6 +682,54 @@
 						"description": "Obtiene todos los vehículos de un usuario específico"
 					},
 					"response": []
+				},
+				{
+					"name": "Get Vehiculos by Empresa - Vehículos por Empresa",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/vehiculos/empresa/1?page=1&limit=10&search=Toyota&marca=Toyota&tipo=Turismo",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"vehiculos",
+								"empresa",
+								"1"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "search",
+									"value": "Toyota"
+								},
+								{
+									"key": "marca",
+									"value": "Toyota"
+								},
+								{
+									"key": "tipo",
+									"value": "Turismo"
+								}
+							]
+						},
+						"description": "Obtiene vehículos de una empresa específica (solo administradores)"
+					},
+					"response": []
 				}
 			],
 			"description": "Endpoints para gestión de vehículos"
@@ -776,6 +872,96 @@
 							]
 						},
 						"description": "Obtiene todas las rutas asociadas a un vehículo específico por su matrícula"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Ruta - Crear Nueva Ruta",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"matricula\": \"BI-1234-AB\",\n  \"id_empresa\": 1,\n  \"total_km\": 18.5,\n  \"tiempo_total\": \"35 min\",\n  \"paradas\": \"[{\\\"nombre\\\":\\\"BBK Kuna (Salida)\\\",\\\"hora\\\":\\\"07:30\\\",\\\"km\\\":0},{\\\"nombre\\\":\\\"Plaza Moyua, Bilbao\\\",\\\"hora\\\":\\\"07:35\\\",\\\"km\\\":2.5},{\\\"nombre\\\":\\\"Colegio Salesianos, Cruces\\\",\\\"hora\\\":\\\"08:30\\\",\\\"km\\\":18.5}]\",\n  \"tiempos_paradas\": \"[5,8,35]\",\n  \"kms_paradas\": \"[2.5,18.5]\",\n  \"fecha_inicio\": \"2024-01-20T07:30:00.000Z\",\n  \"fecha_fin\": \"2024-01-20T08:30:00.000Z\",\n  \"polyline\": \"encoded_polyline_bbk_kuna_salesianos_cruces\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/rutas",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"rutas"
+							]
+						},
+						"description": "Crea una nueva ruta con datos estructurados (paradas, tiempos, kms en formato JSON)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Ruta - Actualizar Ruta",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"total_km\": 20.0,\n  \"tiempo_total\": \"40 min\",\n  \"paradas\": \"[{\\\"nombre\\\":\\\"BBK Kuna (Salida)\\\",\\\"hora\\\":\\\"07:30\\\",\\\"km\\\":0},{\\\"nombre\\\":\\\"Plaza Moyua, Bilbao\\\",\\\"hora\\\":\\\"07:35\\\",\\\"km\\\":2.5},{\\\"nombre\\\":\\\"Colegio Salesianos, Cruces\\\",\\\"hora\\\":\\\"08:35\\\",\\\"km\\\":20.0}]\",\n  \"tiempos_paradas\": \"[5,10,40]\",\n  \"kms_paradas\": \"[2.5,20.0]\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/rutas/7",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"rutas",
+								"7"
+							]
+						},
+						"description": "Actualiza una ruta existente por su ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Ruta - Eliminar Ruta",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/rutas/7",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"rutas",
+								"7"
+							]
+						},
+						"description": "Elimina una ruta existente por su ID"
 					},
 					"response": []
 				}
