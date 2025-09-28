@@ -40,8 +40,11 @@ async function initializeRender() {
         await ticketsSeeder.up();
         console.log('Tickets básicos creados');
         
-        await ticketsAnualesSeeder.up();
-        console.log('Tickets anuales creados');
+        // Forzar regeneración de tickets anuales
+        console.log('Regenerando tickets anuales...');
+        await ticketsAnualesSeeder.down(); // Eliminar existentes
+        await ticketsAnualesSeeder.up();   // Crear nuevos
+        console.log('Tickets anuales regenerados');
         
         console.log('=== Base de datos inicializada correctamente ===');
         console.log('Empresa: San Millán Bus');
