@@ -8,6 +8,7 @@ const usuariosSeeder = require('../src/seeders/02-usuarios-seeder');
 const vehiculosSeeder = require('../src/seeders/03-vehiculos-seeder');
 const rutasSeeder = require('../src/seeders/04-rutas-seeder');
 const ticketsSeeder = require('../src/seeders/05-tickets-seeder');
+const ticketsAnualesSeeder = require('../src/seeders/07-tickets-anuales-seeder');
 
 async function initializeRender() {
     try {
@@ -37,14 +38,17 @@ async function initializeRender() {
         console.log('Rutas creadas');
         
         await ticketsSeeder.up();
-        console.log('Tickets creados');
+        console.log('Tickets básicos creados');
+        
+        await ticketsAnualesSeeder.up();
+        console.log('Tickets anuales creados');
         
         console.log('=== Base de datos inicializada correctamente ===');
         console.log('Empresa: San Millán Bus');
         console.log('Usuarios: 6 (1 jefe + 5 conductores)');
         console.log('Vehículos: 6 (2 gasolina + 2 híbridos + 2 eléctricos)');
         console.log('Rutas: 6 (desde BBK Kuna)');
-        console.log('Tickets: 40 (hotspots de gasolineras)');
+        console.log('Tickets: 664 (40 básicos + 624 anuales distribuidos en 2024)');
         
         process.exit(0);
     } catch (error) {

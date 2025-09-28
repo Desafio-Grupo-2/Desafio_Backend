@@ -8,7 +8,8 @@
         "generate-env": "node scripts/generate-env.js",
         "seed": "node src/seeders/run-seeders.js",
         "seed:rollback": "node src/seeders/run-seeders.js rollback",
-        "init-render": "node scripts/init-render.js"
+        "init-render": "node scripts/init-render.js",
+        "regenerate-tickets": "node scripts/regenerate-tickets.js"
     },
     "repository": {
         "type": "git",
