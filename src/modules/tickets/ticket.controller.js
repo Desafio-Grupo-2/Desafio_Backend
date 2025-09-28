@@ -234,8 +234,13 @@ const getAllEmpleadosMetrics = async (req, res) => {
     try {
         const { periodo, fechaInicio, fechaFin } = req.query;
         
-        // Obtener todos los usuarios
-        const usuarios = await Usuario.findAll();
+        // Obtener solo usuarios con rol conductor
+        const usuarios = await Usuario.findAll({
+            where: { role: 'conductor' }
+        });
+        
+        console.log(`Usuarios conductores encontrados: ${usuarios.length}`);
+        console.log('Usuarios encontrados:', usuarios.map(u => `${u.nombre} ${u.apellido} (${u.role})`));
 
         // Calcular métricas para cada usuario
         const empleadosMetrics = [];
@@ -244,7 +249,7 @@ const getAllEmpleadosMetrics = async (req, res) => {
             try {
                 // Obtener vehículos del usuario
                 const vehiculos = await Vehiculo.findAll({
-                    where: { id_usuario: usuario.id },
+                    where: { id_usuario: usuario.id_usuario },
                     include: [{
                         model: Ruta,
                         as: 'rutas',
@@ -270,7 +275,7 @@ const getAllEmpleadosMetrics = async (req, res) => {
                 });
 
                 empleadosMetrics.push({
-                    usuarioId: usuario.id,
+                    usuarioId: usuario.id_usuario,
                     nombre: usuario.nombre,
                     apellido: usuario.apellido,
                     email: usuario.email,
@@ -281,10 +286,10 @@ const getAllEmpleadosMetrics = async (req, res) => {
                     rutasCount: vehiculos.reduce((sum, v) => sum + v.rutas.length, 0)
                 });
             } catch (error) {
-                console.error(`Error procesando usuario ${usuario.id}:`, error);
+                console.error(`Error procesando usuario ${usuario.id_usuario}:`, error);
                 // Agregar usuario con métricas en 0 si hay error
                 empleadosMetrics.push({
-                    usuarioId: usuario.id,
+                    usuarioId: usuario.id_usuario,
                     nombre: usuario.nombre,
                     apellido: usuario.apellido,
                     email: usuario.email,
