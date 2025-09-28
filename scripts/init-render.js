@@ -1,6 +1,7 @@
 require('dotenv').config();
 const { loadModels } = require('../src/models');
 const { sequelize } = require('../src/config/database');
+const { Op } = require('sequelize');
 
 // Importar seeders
 const empresaSeeder = require('../src/seeders/01-empresa-seeder');
@@ -19,38 +20,70 @@ async function initializeRender() {
         await loadModels();
         console.log('Modelos cargados correctamente');
         
-        // Sincronizar base de datos (crear tablas)
-        await sequelize.sync({ force: true });
-        console.log('Tablas creadas correctamente');
+        // Sincronizar base de datos (crear tablas si no existen)
+        await sequelize.sync({ alter: true });
+        console.log('Tablas sincronizadas correctamente');
         
-        // Ejecutar seeders
-        console.log('Ejecutando seeders...');
+        // Ejecutar seeders solo si no existen datos
+        console.log('Verificando datos existentes...');
         
-        await empresaSeeder.up();
-        console.log('Empresa creada');
+        const { Empresa, Usuario, Vehiculo, Ruta, Ticket } = require('../src/models');
         
-        await usuariosSeeder.up();
-        console.log('Usuarios creados');
+        // Verificar si ya existen datos
+        const empresaExists = await Empresa.count() > 0;
+        const usuariosExists = await Usuario.count() > 0;
+        const vehiculosExists = await Vehiculo.count() > 0;
+        const ticketsAnualesExists = await Ticket.count({ where: { fecha: { [Op.gte]: new Date('2024-01-01'), [Op.lte]: new Date('2024-12-31') } } }) > 0;
+        const ticketsRecientesExists = await Ticket.count({ where: { fecha: { [Op.gte]: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000) } } }) > 0;
         
-        await vehiculosSeeder.up();
-        console.log('Vehículos creados');
+        if (!empresaExists) {
+            console.log('Creando empresa...');
+            await empresaSeeder.up();
+            console.log('Empresa creada');
+        } else {
+            console.log('Empresa ya existe, saltando...');
+        }
         
-        await rutasSeeder.up();
-        console.log('Rutas creadas');
+        if (!usuariosExists) {
+            console.log('Creando usuarios...');
+            await usuariosSeeder.up();
+            console.log('Usuarios creados');
+        } else {
+            console.log('Usuarios ya existen, saltando...');
+        }
         
-        await ticketsSeeder.up();
-        console.log('Tickets básicos creados');
+        if (!vehiculosExists) {
+            console.log('Creando vehículos...');
+            await vehiculosSeeder.up();
+            console.log('Vehículos creados');
+        } else {
+            console.log('Vehículos ya existen, saltando...');
+        }
         
-        // Forzar regeneración de tickets anuales
-        console.log('Regenerando tickets anuales...');
-        await ticketsAnualesSeeder.down(); // Eliminar existentes
-        await ticketsAnualesSeeder.up();   // Crear nuevos
-        console.log('Tickets anuales regenerados');
+        const rutasExists = await Ruta.count() > 0;
+        if (!rutasExists) {
+            console.log('Creando rutas...');
+            await rutasSeeder.up();
+            console.log('Rutas creadas');
+        } else {
+            console.log('Rutas ya existen, saltando...');
+        }
         
-        // Generar tickets recientes (último año)
-        console.log('Generando tickets recientes...');
-        await ticketsRecientesSeeder.up();
-        console.log('Tickets recientes generados');
+        if (!ticketsAnualesExists) {
+            console.log('Generando tickets anuales 2024...');
+            await ticketsAnualesSeeder.up();
+            console.log('Tickets anuales generados');
+        } else {
+            console.log('Tickets anuales ya existen, saltando...');
+        }
+        
+        if (!ticketsRecientesExists) {
+            console.log('Generando tickets recientes...');
+            await ticketsRecientesSeeder.up();
+            console.log('Tickets recientes generados');
+        } else {
+            console.log('Tickets recientes ya existen, saltando...');
+        }
         
         console.log('=== Base de datos inicializada correctamente ===');
         console.log('Empresa: San Millán Bus');

@@ -20,10 +20,20 @@ module.exports = {
       }
       
       // Obtener estaciones de servicio
-      const estaciones = await EstacionServicio.findAll();
+      let estaciones = await EstacionServicio.findAll();
       if (estaciones.length === 0) {
-        console.log('No hay estaciones de servicio disponibles');
-        return;
+        console.log('No hay estaciones de servicio. Creando estaciones de ejemplo...');
+        const estacionesEjemplo = [
+          { nombre: 'Repsol Centro', direccion: 'Calle Mayor 123', ciudad: 'Madrid' },
+          { nombre: 'Cepsa Norte', direccion: 'Avenida Norte 45', ciudad: 'Madrid' },
+          { nombre: 'BP Sur', direccion: 'Carretera Sur Km 5', ciudad: 'Madrid' },
+          { nombre: 'Shell Este', direccion: 'Autopista Este Salida 12', ciudad: 'Madrid' },
+          { nombre: 'Total Oeste', direccion: 'Carretera Oeste 78', ciudad: 'Madrid' }
+        ];
+        
+        await EstacionServicio.bulkCreate(estacionesEjemplo);
+        estaciones = await EstacionServicio.findAll();
+        console.log(`✅ Creadas ${estaciones.length} estaciones de servicio`);
       }
       
       const tickets = [];
