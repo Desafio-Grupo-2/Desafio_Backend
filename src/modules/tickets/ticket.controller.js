@@ -266,7 +266,12 @@ const getAllEmpleadosMetrics = async (req, res) => {
 
                 vehiculos.forEach(vehiculo => {
                     vehiculo.rutas.forEach(ruta => {
-                        totalKm += ruta.total_km || 0;
+                        // Para rutas escolares: ida y vuelta (x2) x 5 días/semana x ~40 semanas/año
+                        // Aproximadamente 200 días escolares por año
+                        const kmPorViaje = parseFloat(ruta.total_km) || 0;
+                        const kmAnuales = kmPorViaje * 2 * 200; // ida y vuelta x días escolares
+                        totalKm += kmAnuales;
+                        
                         ruta.tickets.forEach(ticket => {
                             totalImporte += (ticket.importecoche_euros || 0) + (ticket.importebus_euros || 0);
                             totalTickets++;
@@ -304,11 +309,11 @@ const getAllEmpleadosMetrics = async (req, res) => {
 
         // Calcular totales generales
         const totalesGenerales = empleadosMetrics.reduce((acc, empleado) => ({
-            totalImporte: acc.totalImporte + empleado.totalImporte,
-            totalKm: acc.totalKm + empleado.totalKm,
-            totalTickets: acc.totalTickets + empleado.totalTickets,
-            totalVehiculos: acc.totalVehiculos + empleado.vehiculosCount,
-            totalRutas: acc.totalRutas + empleado.rutasCount
+            totalImporte: acc.totalImporte + (parseFloat(empleado.totalImporte) || 0),
+            totalKm: acc.totalKm + (parseFloat(empleado.totalKm) || 0),
+            totalTickets: acc.totalTickets + (parseInt(empleado.totalTickets) || 0),
+            totalVehiculos: acc.totalVehiculos + (parseInt(empleado.vehiculosCount) || 0),
+            totalRutas: acc.totalRutas + (parseInt(empleado.rutasCount) || 0)
         }), {
             totalImporte: 0,
             totalKm: 0,
