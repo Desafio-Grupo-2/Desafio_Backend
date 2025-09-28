@@ -1,4 +1,4 @@
-const { Vehiculo, Usuario, Empresa, Ticket } = require('../../models');
+const { Vehiculo, Usuario, Empresa, Ticket, Ruta } = require('../../models');
 const { Op } = require('sequelize');
 const { logSecurityError } = require('../../utils/securityLogger');
 
@@ -388,7 +388,7 @@ const getVehiculosConCostesReales = async (req, res) => {
         break;
     }
     
-    console.log(`🔍 Buscando tickets desde: ${fechaLimite.toISOString()} (período: ${periodo})`);
+    console.log(`Buscando tickets desde: ${fechaLimite.toISOString()} (período: ${periodo})`);
     
     // Obtener vehículos con sus tickets
     const vehiculos = await Vehiculo.findAll({
@@ -403,7 +403,7 @@ const getVehiculosConCostesReales = async (req, res) => {
 
     // Calcular costes reales basados en tickets
     const vehiculosConCostes = await Promise.all(vehiculos.map(async (vehiculo) => {
-      // Buscar tickets según el período seleccionado
+      // Buscar tickets específicos del vehículo a través de las rutas
       const tickets = await Ticket.findAll({
         where: {
           id_empresa: id_empresa,
@@ -411,6 +411,13 @@ const getVehiculosConCostesReales = async (req, res) => {
             [Op.gte]: fechaLimite
           }
         },
+        include: [{
+          model: Ruta,
+          as: 'ruta',
+          where: {
+            matricula: vehiculo.matricula // ✅ CORREGIDO: Buscar por matrícula a través de rutas
+          }
+        }],
         order: [['fecha', 'DESC']],
         limit: 50 // Aumentar límite para períodos más largos
       });
@@ -420,7 +427,9 @@ const getVehiculosConCostesReales = async (req, res) => {
       let precioPromedio = 0;
       
       if (tickets.length > 0) {
-        // Calcular promedios reales
+        console.log(`Vehículo ${vehiculo.matricula}: ${tickets.length} tickets encontrados`);
+        
+        // Calcular promedios reales específicos del vehículo
         const totalImporte = tickets.reduce((sum, ticket) => 
           sum + (ticket.importebus_euros || 0), 0);
         const totalLitros = tickets.reduce((sum, ticket) => 
@@ -434,21 +443,25 @@ const getVehiculosConCostesReales = async (req, res) => {
           precioPromedio = precios.length > 0 ? 
             precios.reduce((sum, precio) => sum + precio, 0) / precios.length : 0;
           
-          // Calcular coste para los KM solicitados
-          const kmPorRepostaje = 400; // KM promedio entre repostajes
-          const repostajesNecesarios = total_km / kmPorRepostaje;
+          // Calcular coste específico para este vehículo
+          const consumoPorKm = consumoReal / 400; // Consumo por km basado en datos reales
+          const precioPorLitro = precioPromedio > 0 ? precioPromedio : 
+            (vehiculo.motorizacion === 'Eléctrico' ? 0.25 : 1.5);
           
-          // Convertir de céntimos a euros y calcular coste real
-          const importePromedioEuros = (totalImporte / tickets.length) / 100;
-          costeReal = importePromedioEuros * repostajesNecesarios;
+          costeReal = total_km * consumoPorKm * precioPorLitro;
+          
+          console.log(`${vehiculo.matricula}: consumo=${consumoReal}L, precio=${precioPorLitro}€/L, coste=${costeReal}€`);
         }
       }
 
-      // Si no hay datos reales, usar datos del vehículo
+      // Si no hay datos reales, usar datos específicos del vehículo
       if (costeReal === 0) {
         const consumoMedio = (vehiculo.consumo_min + vehiculo.consumo_max) / 2;
-        const precio = vehiculo.motorizacion === 'Eléctrico' ? 0.25 : 1.5;
+        const precio = vehiculo.motorizacion === 'Eléctrico' ? 0.25 : 
+                     vehiculo.motorizacion === 'Híbrido' ? 1.4 : 1.7;
         costeReal = (total_km / 100) * consumoMedio * precio;
+        
+        console.log(`${vehiculo.matricula}: Sin tickets, usando datos del vehículo - consumo=${consumoMedio}L/100km, precio=${precio}€/L, coste=${costeReal}€`);
       }
 
       return {
