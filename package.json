@@ -11,6 +11,7 @@
         "init-render": "node scripts/init-render.js",
         "regenerate-tickets": "node scripts/regenerate-tickets.js",
         "regenerate-tickets-render": "node regenerate-tickets-render.js",
+        "regenerate-recent-tickets": "node scripts/regenerate-recent-tickets.js",
         "verify-tickets": "node verify-tickets.js"
     },
     "repository": {

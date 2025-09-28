@@ -234,6 +234,29 @@ const getAllEmpleadosMetrics = async (req, res) => {
     try {
         const { periodo, fechaInicio, fechaFin } = req.query;
         
+        // Calcular fechas según el período
+        let fechaLimite, fechaFinFiltro;
+        const ahora = new Date();
+        
+        switch (periodo) {
+            case '30dias':
+                fechaLimite = new Date(ahora.getTime() - 30 * 24 * 60 * 60 * 1000);
+                fechaFinFiltro = ahora;
+                break;
+            case 'semestre':
+                fechaLimite = new Date(ahora.getTime() - 6 * 30 * 24 * 60 * 60 * 1000);
+                fechaFinFiltro = ahora;
+                break;
+            case 'todos':
+            default:
+                // Para rutas escolares, usar datos de 2024
+                fechaLimite = new Date('2024-01-01');
+                fechaFinFiltro = new Date('2024-12-31');
+                break;
+        }
+        
+        console.log(`Filtro de fechas: ${fechaLimite.toISOString()} a ${fechaFinFiltro.toISOString()}`);
+        
         // Obtener solo usuarios con rol conductor
         const usuarios = await Usuario.findAll({
             where: { role: 'conductor' }
@@ -255,7 +278,14 @@ const getAllEmpleadosMetrics = async (req, res) => {
                         as: 'rutas',
                         include: [{
                             model: Ticket,
-                            as: 'tickets'
+                            as: 'tickets',
+                            where: {
+                                fecha: {
+                                    [Op.gte]: fechaLimite,
+                                    [Op.lte]: fechaFinFiltro
+                                }
+                            },
+                            required: false
                         }]
                     }]
                 });
