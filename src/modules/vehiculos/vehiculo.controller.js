@@ -418,7 +418,6 @@ const getVehiculosConCostesReales = async (req, res) => {
     });
     
     if (tieneDatosRecientes === 0) {
-      console.log('No hay datos recientes, usando 2024 como fallback para desarrollo');
       switch (periodo) {
         case 'semestre':
           fechaLimite = new Date(`${añoBase}-07-01T00:00:00.000Z`);
@@ -436,9 +435,6 @@ const getVehiculosConCostesReales = async (req, res) => {
       }
     }
     
-    console.log(`Buscando tickets desde: ${fechaLimite.toISOString()} hasta: ${fechaFin.toISOString()} (período: ${periodo})`);
-    console.log(`Fecha actual: ${ahora.toISOString()}`);
-    console.log(`Límite legal máximo: ${fechaMaxima.toISOString()}`);
     
     // Obtener vehículos con sus tickets
     const vehiculos = await Vehiculo.findAll({
@@ -477,10 +473,7 @@ const getVehiculosConCostesReales = async (req, res) => {
       let consumoReal = 0;
       let precioPromedio = 0;
       
-      console.log(`Vehículo ${vehiculo.matricula}: ${tickets.length} tickets encontrados en el período ${periodo}`);
-      
       if (tickets.length > 0) {
-        console.log(`Vehículo ${vehiculo.matricula}: ${tickets.length} tickets encontrados`);
         
         // Calcular promedios reales específicos del vehículo
         const totalImporte = tickets.reduce((sum, ticket) => 
@@ -503,7 +496,6 @@ const getVehiculosConCostesReales = async (req, res) => {
           
           costeReal = total_km * consumoPorKm * precioPorLitro;
           
-          console.log(`${vehiculo.matricula}: consumo=${consumoReal}L, precio=${precioPorLitro}€/L, coste=${costeReal}€`);
         }
       }
 

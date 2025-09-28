@@ -79,8 +79,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Configuración de Swagger
 const swaggerConfig = require('../docs/config/swagger.config');
-const swaggerSpec = swaggerJsdoc(swaggerConfig);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerConfig));
 
 // Rutas de la API
 app.use('/api/auth', authRoutes);
