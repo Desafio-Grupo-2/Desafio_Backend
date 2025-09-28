@@ -78,7 +78,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Configuración de Swagger
-const swaggerConfig = require('../docs/config/swagger.manual');
+const swaggerConfig = require('../docs/config/swagger.hybrid');
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerConfig));
 
 // Rutas de la API
