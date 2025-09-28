@@ -373,22 +373,72 @@ const getVehiculosConCostesReales = async (req, res) => {
     const { id_empresa } = req.params;
     const { total_km = 200, periodo = '30dias' } = req.query; // KM por defecto, período por defecto
     
-    // Calcular fecha límite según el período
-    let fechaLimite;
+    // Calcular fecha límite según el período (dinámico desde la fecha actual)
+    let fechaLimite, fechaFin;
+    const ahora = new Date();
+    const fechaMaxima = new Date(ahora.getTime() - 365 * 24 * 60 * 60 * 1000); // Máximo 1 año hacia atrás
+    
+    // Para desarrollo: incluir 2024 como año base si no hay datos recientes
+    const añoBase = 2024;
+    const fechaBase2024 = new Date(`${añoBase}-01-01T00:00:00.000Z`);
+    
     switch (periodo) {
       case 'semestre':
-        fechaLimite = new Date(Date.now() - 6 * 30 * 24 * 60 * 60 * 1000); // 6 meses
+        // Últimos 6 meses desde hoy, pero si no hay datos, usar 2024
+        fechaLimite = new Date(ahora.getTime() - 6 * 30 * 24 * 60 * 60 * 1000);
+        fechaFin = ahora;
         break;
       case 'anual':
-        fechaLimite = new Date(Date.now() - 12 * 30 * 24 * 60 * 60 * 1000); // 12 meses
+        // Último año completo (desde hace 12 meses hasta hace 1 mes)
+        fechaLimite = new Date(ahora.getTime() - 12 * 30 * 24 * 60 * 60 * 1000);
+        fechaFin = new Date(ahora.getTime() - 1 * 30 * 24 * 60 * 60 * 1000);
         break;
       case '30dias':
       default:
-        fechaLimite = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000); // 30 días
+        // Últimos 30 días desde hoy
+        fechaLimite = new Date(ahora.getTime() - 30 * 24 * 60 * 60 * 1000);
+        fechaFin = ahora;
         break;
     }
     
-    console.log(`Buscando tickets desde: ${fechaLimite.toISOString()} (período: ${periodo})`);
+    // Asegurar que no exceda el límite legal de 1 año
+    if (fechaLimite < fechaMaxima) {
+      fechaLimite = fechaMaxima;
+    }
+    
+    // Para desarrollo: si no hay datos recientes, usar 2024 como fallback
+    const tieneDatosRecientes = await Ticket.count({
+      where: {
+        id_empresa: id_empresa,
+        fecha: {
+          [Op.gte]: fechaLimite,
+          [Op.lte]: fechaFin
+        }
+      }
+    });
+    
+    if (tieneDatosRecientes === 0) {
+      console.log('No hay datos recientes, usando 2024 como fallback para desarrollo');
+      switch (periodo) {
+        case 'semestre':
+          fechaLimite = new Date(`${añoBase}-07-01T00:00:00.000Z`);
+          fechaFin = new Date(`${añoBase}-12-31T23:59:59.999Z`);
+          break;
+        case 'anual':
+          fechaLimite = new Date(`${añoBase}-01-01T00:00:00.000Z`);
+          fechaFin = new Date(`${añoBase}-12-31T23:59:59.999Z`);
+          break;
+        case '30dias':
+        default:
+          fechaLimite = new Date(`${añoBase}-01-01T00:00:00.000Z`);
+          fechaFin = new Date(`${añoBase}-01-31T23:59:59.999Z`);
+          break;
+      }
+    }
+    
+    console.log(`Buscando tickets desde: ${fechaLimite.toISOString()} hasta: ${fechaFin.toISOString()} (período: ${periodo})`);
+    console.log(`Fecha actual: ${ahora.toISOString()}`);
+    console.log(`Límite legal máximo: ${fechaMaxima.toISOString()}`);
     
     // Obtener vehículos con sus tickets
     const vehiculos = await Vehiculo.findAll({
@@ -408,14 +458,15 @@ const getVehiculosConCostesReales = async (req, res) => {
         where: {
           id_empresa: id_empresa,
           fecha: {
-            [Op.gte]: fechaLimite
+            [Op.gte]: fechaLimite,
+            [Op.lte]: fechaFin
           }
         },
         include: [{
           model: Ruta,
           as: 'ruta',
           where: {
-            matricula: vehiculo.matricula // ✅ CORREGIDO: Buscar por matrícula a través de rutas
+            matricula: vehiculo.matricula 
           }
         }],
         order: [['fecha', 'DESC']],
@@ -425,6 +476,8 @@ const getVehiculosConCostesReales = async (req, res) => {
       let costeReal = 0;
       let consumoReal = 0;
       let precioPromedio = 0;
+      
+      console.log(`Vehículo ${vehiculo.matricula}: ${tickets.length} tickets encontrados en el período ${periodo}`);
       
       if (tickets.length > 0) {
         console.log(`Vehículo ${vehiculo.matricula}: ${tickets.length} tickets encontrados`);
