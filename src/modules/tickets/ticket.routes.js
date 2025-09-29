@@ -1,6 +1,6 @@
 const express = require('express');
 const { authenticateToken } = require('../../middlewares/authentication');
-const { getAllTickets, getTicketById, getTicketsByRuta, getTicketsByUsuario, getTotalTicketsSum, getUsuarioMetrics, getAllEmpleadosMetrics } = require('./ticket.controller');
+const { getAllTickets, getTicketById, getTicketsByRuta, getTicketsByUsuario, getTotalTicketsSum, getUsuarioMetrics, getAllEmpleadosMetrics, getTicketsCoordenadas, debugTicketsCoordenadas } = require('./ticket.controller');
 
 const router = express.Router();
 
@@ -24,6 +24,12 @@ router.get('/metrics/empleados', getAllEmpleadosMetrics);
 
 // GET /api/tickets/metrics/:usuarioId - Obtener métricas de usuario
 router.get('/metrics/:usuarioId', getUsuarioMetrics);
+
+// GET /api/tickets/coordenadas - Obtener coordenadas de tickets para mapas
+router.get('/coordenadas', getTicketsCoordenadas);
+
+// GET /api/tickets/debug-coordenadas - Debug: verificar tickets con coordenadas
+router.get('/debug-coordenadas', debugTicketsCoordenadas);
 
 // GET /api/tickets/:id - Obtener ticket por ID (debe ir al final)
 router.get('/:id', getTicketById);

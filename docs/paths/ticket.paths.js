@@ -693,6 +693,166 @@ const ticketPaths = {
                 }
             }
         }
+    },
+
+    '/api/tickets/coordenadas': {
+        get: {
+            tags: ['Tickets'],
+            summary: 'Obtener coordenadas de tickets para mapas',
+            description: 'Obtiene las coordenadas (latitud y longitud) de todos los tickets con filtros de tiempo para crear mapas de hotspots de repostaje',
+            security: [{ bearerAuth: [] }],
+            parameters: [
+                {
+                    name: 'periodo',
+                    in: 'query',
+                    description: 'Período de filtrado de tiempo',
+                    required: false,
+                    schema: {
+                        type: 'string',
+                        enum: ['1mes', '6meses', '1año', 'custom'],
+                        default: '1año'
+                    }
+                },
+                {
+                    name: 'fechaInicio',
+                    in: 'query',
+                    description: 'Fecha de inicio para período custom (YYYY-MM-DD)',
+                    required: false,
+                    schema: {
+                        type: 'string',
+                        format: 'date'
+                    }
+                },
+                {
+                    name: 'fechaFin',
+                    in: 'query',
+                    description: 'Fecha de fin para período custom (YYYY-MM-DD)',
+                    required: false,
+                    schema: {
+                        type: 'string',
+                        format: 'date'
+                    }
+                },
+                {
+                    name: 'id_empresa',
+                    in: 'query',
+                    description: 'ID de la empresa para filtrar tickets (opcional)',
+                    required: false,
+                    schema: {
+                        type: 'integer',
+                        minimum: 1
+                    }
+                }
+            ],
+            responses: {
+                200: {
+                    description: 'Coordenadas de tickets obtenidas exitosamente',
+                    content: {
+                        'application/json': {
+                            schema: {
+                                type: 'object',
+                                properties: {
+                                    success: {
+                                        type: 'boolean',
+                                        example: true
+                                    },
+                                    data: {
+                                        type: 'object',
+                                        properties: {
+                                            periodo: {
+                                                type: 'string',
+                                                description: 'Período aplicado',
+                                                example: '1año'
+                                            },
+                                            fechaInicio: {
+                                                type: 'string',
+                                                format: 'date-time',
+                                                description: 'Fecha de inicio del filtro',
+                                                example: '2024-01-01T00:00:00.000Z'
+                                            },
+                                            fechaFin: {
+                                                type: 'string',
+                                                format: 'date-time',
+                                                description: 'Fecha de fin del filtro',
+                                                example: '2024-12-31T23:59:59.999Z'
+                                            },
+                                            totalCoordenadas: {
+                                                type: 'integer',
+                                                description: 'Número total de coordenadas válidas encontradas',
+                                                example: 150
+                                            },
+                                            coordenadas: {
+                                                type: 'array',
+                                                description: 'Array de coordenadas de tickets',
+                                                items: {
+                                                    type: 'object',
+                                                    properties: {
+                                                        id: {
+                                                            type: 'integer',
+                                                            description: 'ID del ticket',
+                                                            example: 123
+                                                        },
+                                                        fecha: {
+                                                            type: 'string',
+                                                            format: 'date-time',
+                                                            description: 'Fecha del ticket',
+                                                            example: '2024-06-15T10:30:00.000Z'
+                                                        },
+                                                        latitud: {
+                                                            type: 'number',
+                                                            format: 'float',
+                                                            description: 'Latitud de la ubicación',
+                                                            example: 40.4168
+                                                        },
+                                                        longitud: {
+                                                            type: 'number',
+                                                            format: 'float',
+                                                            description: 'Longitud de la ubicación',
+                                                            example: -3.7038
+                                                        }
+                                                    },
+                                                    required: ['id', 'fecha', 'latitud', 'longitud']
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                400: {
+                    description: 'Parámetros de consulta inválidos',
+                    content: {
+                        'application/json': {
+                            schema: {
+                                $ref: '#/components/schemas/ErrorResponse'
+                            }
+                        }
+                    }
+                },
+                401: {
+                    description: 'Token de autenticación inválido o expirado',
+                    content: {
+                        'application/json': {
+                            schema: {
+                                $ref: '#/components/schemas/ErrorResponse'
+                            }
+                        }
+                    }
+                },
+                500: {
+                    description: 'Error interno del servidor',
+                    content: {
+                        'application/json': {
+                            schema: {
+                                $ref: '#/components/schemas/ErrorResponse'
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 };
 

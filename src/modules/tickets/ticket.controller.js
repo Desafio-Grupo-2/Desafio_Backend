@@ -389,6 +389,177 @@ const getAllEmpleadosMetrics = async (req, res) => {
     }
 };
 
+// Obtener coordenadas de tickets para mapas
+const getTicketsCoordenadas = async (req, res) => {
+    try {
+        const { periodo, fechaInicio, fechaFin, id_empresa } = req.query;
+        
+        // Calcular fechas según el período
+        let fechaLimite, fechaFinFiltro;
+        const ahora = new Date();
+        
+        switch (periodo) {
+            case '1mes':
+                fechaLimite = new Date(ahora.getTime() - 30 * 24 * 60 * 60 * 1000);
+                fechaFinFiltro = ahora;
+                break;
+            case '6meses':
+                fechaLimite = new Date(ahora.getTime() - 6 * 30 * 24 * 60 * 60 * 1000);
+                fechaFinFiltro = ahora;
+                break;
+            case '1año':
+                fechaLimite = new Date(ahora.getTime() - 365 * 24 * 60 * 60 * 1000);
+                fechaFinFiltro = ahora;
+                break;
+            case 'custom':
+                if (fechaInicio && fechaFin) {
+                    fechaLimite = new Date(fechaInicio);
+                    fechaFinFiltro = new Date(fechaFin);
+                } else {
+                    return res.status(400).json({
+                        success: false,
+                        message: 'Para período custom se requieren fechaInicio y fechaFin'
+                    });
+                }
+                break;
+            default:
+                // Por defecto, último año
+                fechaLimite = new Date(ahora.getTime() - 365 * 24 * 60 * 60 * 1000);
+                fechaFinFiltro = ahora;
+                break;
+        }
+        
+        // Construir condiciones de filtro
+        const whereConditions = {
+            fecha: {
+                [Op.gte]: fechaLimite,
+                [Op.lte]: fechaFinFiltro
+            },
+            [Op.or]: [
+                { latitud: { [Op.ne]: null } },
+                { longitud: { [Op.ne]: null } },
+                { coordenadas: { [Op.ne]: null } }
+            ]
+        };
+        
+        // Filtrar por empresa si se especifica
+        if (id_empresa) {
+            whereConditions.id_empresa = id_empresa;
+        }
+        
+        const tickets = await Ticket.findAll({
+            where: whereConditions,
+            attributes: [
+                'id',
+                'fecha',
+                'latitud',
+                'longitud',
+                'coordenadas'
+            ],
+            order: [['fecha', 'DESC']]
+        });
+        
+        // Procesar coordenadas
+        const coordenadas = tickets.map(ticket => {
+            let lat, lng;
+            
+            // Priorizar latitud/longitud separadas
+            if (ticket.latitud && ticket.longitud) {
+                lat = parseFloat(ticket.latitud);
+                lng = parseFloat(ticket.longitud);
+            } 
+            // Si no, intentar parsear el campo coordenadas
+            else if (ticket.coordenadas) {
+                const coords = ticket.coordenadas.split(',');
+                if (coords.length >= 2) {
+                    lat = parseFloat(coords[0].trim());
+                    lng = parseFloat(coords[1].trim());
+                }
+            }
+            
+            // Solo incluir si tenemos coordenadas válidas
+            if (lat && lng && !isNaN(lat) && !isNaN(lng)) {
+                return {
+                    id: ticket.id,
+                    fecha: ticket.fecha,
+                    latitud: lat,
+                    longitud: lng
+                };
+            }
+            return null;
+        }).filter(coord => coord !== null);
+        
+        res.json({
+            success: true,
+            data: {
+                periodo: periodo || '1año',
+                fechaInicio: fechaLimite,
+                fechaFin: fechaFinFiltro,
+                totalCoordenadas: coordenadas.length,
+                coordenadas: coordenadas
+            }
+        });
+    } catch (error) {
+        console.error('Error al obtener coordenadas de tickets:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error al obtener coordenadas de tickets'
+        });
+    }
+};
+
+// Endpoint temporal para debug - verificar tickets con coordenadas
+const debugTicketsCoordenadas = async (req, res) => {
+    try {
+        const { sequelize } = require('../../config/database');
+        
+        // 1. Verificar estructura de la tabla ticket
+        const [tableStructure] = await sequelize.query(`
+            SELECT column_name, data_type, is_nullable 
+            FROM information_schema.columns 
+            WHERE table_name = 'ticket' 
+            ORDER BY ordinal_position
+        `);
+        
+        // 2. Buscar cualquier campo que contenga coordenadas
+        const [coordsResults] = await sequelize.query(`
+            SELECT id, fecha, latitud, longitud, coordenadas 
+            FROM ticket 
+            WHERE latitud IS NOT NULL 
+               OR longitud IS NOT NULL 
+               OR coordenadas IS NOT NULL 
+               OR latitud != 0
+               OR longitud != 0
+            ORDER BY id DESC 
+            LIMIT 10
+        `);
+        
+        // 3. Buscar en todos los campos de algunos tickets
+        const [sampleTickets] = await sequelize.query(`
+            SELECT * FROM ticket 
+            WHERE id IN (773, 774, 775, 776, 777, 778, 779, 780)
+            ORDER BY id
+        `);
+
+        res.json({
+            success: true,
+            data: {
+                tableStructure,
+                ticketsConCoordenadas: coordsResults.length,
+                coordenadasEncontradas: coordsResults,
+                ticketsMuestra: sampleTickets
+            }
+        });
+    } catch (error) {
+        console.error('Error en debug:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error en debug',
+            error: error.message
+        });
+    }
+};
+
 module.exports = {
     getAllTickets,
     getTicketById,
@@ -396,5 +567,7 @@ module.exports = {
     getTicketsByUsuario,
     getTotalTicketsSum,
     getUsuarioMetrics,
-    getAllEmpleadosMetrics
+    getAllEmpleadosMetrics,
+    getTicketsCoordenadas,
+    debugTicketsCoordenadas
 };
