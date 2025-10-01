@@ -55,10 +55,11 @@ const corsOptions = {
         'https://localhost:3000',
         'https://desafio-fullback.onrender.com',
         'https://desafio-backend-qb7w.onrender.com',
-        process.env.CORS_ORIGIN
+        'https://desafio-frontend-deploy-umber.vercel.app',
+        process.env.CORS_ORIGIN,
     ].filter(Boolean),
     credentials: true,
-    optionsSuccessStatus: 200
+    optionsSuccessStatus: 200,
 };
 
 app.use(cors(corsOptions));
