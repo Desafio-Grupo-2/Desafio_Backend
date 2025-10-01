@@ -48,28 +48,17 @@ app.use(generalLimiter);
 
 // CORS
 const corsOptions = {
-    origin: function (origin, callback) {
-        if (!origin) return callback(null, true);
-
-        if (process.env.NODE_ENV === 'development') {
-            return callback(null, true);
-        }
-
-        // En producción, permitir el dominio de Render y otros dominios configurados
-        const allowedOrigins = [
-            'https://desafio-backend-qb7w.onrender.com',
-            process.env.CORS_ORIGIN,
-            'http://localhost:5173',
-            'http://localhost:3000',
-        ].filter(Boolean);
-
-        if (allowedOrigins.includes(origin)) {
-            return callback(null, true);
-        }
-
-        callback(new Error('No permitido por CORS'));
-    },
+    origin: [
+        'http://localhost:5173',
+        'https://localhost:5173',
+        'http://localhost:3000',
+        'https://localhost:3000',
+        'https://desafio-fullback.onrender.com',
+        'https://desafio-backend-qb7w.onrender.com',
+        process.env.CORS_ORIGIN
+    ].filter(Boolean),
     credentials: true,
+    optionsSuccessStatus: 200
 };
 
 app.use(cors(corsOptions));
